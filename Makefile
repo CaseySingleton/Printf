@@ -10,14 +10,14 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= ft_ls
+NAME			= libftprintf.a
 
 CC				= gcc
 CFLAGS			= -Wall -Werror -Wextra
-FLAGS			= $(CFLAGS) $(PFLAGS)
+FLAGS			= $(CFLAGS)
 
-FILES			= main.c utils.c manage_flags.c manage_file.c list_functions.c\
-				  sorting.c time.c printing.c error_checks.c
+FILES			= main.c ft_printf.c argument_parsing.c padding.c \
+				  struct_functions.c argument_handling.c
 
 SRC				= $(addprefix srcs/, $(FILES))
 OBJ				= $(addprefix build/, $(FILES:.c=.o))
@@ -32,8 +32,11 @@ ft:
 	@make -C libft
 	@make re
 
+ex:	$(OBJ)
+	@$(CC) $(FLAGS) $(FT) -I includes $(OBJ) -o printf
+
 $(NAME): $(OBJ) libft/libft.a
-	@$(CC) $(FLAGS) $(FT) -I includes $(OBJ) -o $@
+	@ar rcs $@ $(OBJ)
 
 build:
 	mkdir build

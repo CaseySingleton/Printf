@@ -12,8 +12,6 @@
 
 #include "libft.h"
 
-#include <stdio.h>
-
 int				ft_copy_until(char **dest, char *src, int stop)
 {
 	int		len;

@@ -13,8 +13,6 @@
 #include "libft.h"
 #include "get_next_line.h"
 
-#include <stdio.h>
-
 static t_list		*get_file(int fd, t_list **lst)
 {
 	t_list		*cur;
@@ -64,7 +62,7 @@ int					get_next_line(const int fd, char **line)
 	(bytes = read(fd, buff, BUFF_SIZE)) > 0)
 	{
 		buff[bytes] = '\0';
-		file->content = ft_realloc_str(file->content, BUFF_SIZE);
+		file->content = ft_realloc_str(file->content, bytes);
 		if (!(file->content = ft_strcat(file->content, buff)))
 			return (-1);
 	}

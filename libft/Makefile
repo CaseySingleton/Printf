@@ -58,9 +58,16 @@ FILES		= ft_memset.c\
 			  ft_strnequ.c\
 			  ft_strsub.c\
 			  ft_strjoin.c\
+			  ft_strjoin_free.c\
+			  ft_strjoin_free_s1.c\
+			  ft_strjoin_free_s2.c\
 			  ft_strtrim.c\
 			  ft_strsplit.c\
 			  ft_itoa.c\
+			  ft_itoa_base.c\
+			  ft_lltoa_base.c\
+			  ft_llutoa_base.c\
+			  ft_ultoa.c\
 			  ft_putchar.c\
 			  ft_putstr.c\
 			  ft_putendl.c\

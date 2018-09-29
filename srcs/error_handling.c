@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   error_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/22 16:17:24 by csinglet          #+#    #+#             */
-/*   Updated: 2018/04/22 16:17:25 by csinglet         ###   ########.fr       */
+/*   Created: 2018/09/27 19:48:18 by csinglet          #+#    #+#             */
+/*   Updated: 2018/09/27 19:48:19 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "printf.h"
 
-void	ft_putstr(char const *s)
+/*
+**
+*/
+
+int			type_check(char specifier, va_list arg)
 {
-	if (s == NULL)
-		return ;
-	write(1, s, ft_strlen(s));
+	//	check the type of arg agains the type specified by specifier
+	//	  if the types do not match return 0
+	//	  else return 1
 }
