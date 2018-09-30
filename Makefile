@@ -33,6 +33,7 @@ test: $(OBJ)
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: $@"
+	@cp libft/libft.a ./$(NAME)
 	@ar rc $@ $(OBJ)
 	@ranlib $@
 
@@ -42,7 +43,6 @@ build:
 
 build/%.o: srcs/%.c | build
 	@echo "Building $@"
-	@cp libft/libft.a ./$(NAME)
 	@$(CC) -I includes -c $< -o $@
 
 clean:
