@@ -6,7 +6,7 @@
 #    By: csinglet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/22 18:59:57 by csinglet          #+#    #+#              #
-#    Updated: 2018/09/13 20:27:33 by csinglet         ###   ########.fr        #
+#    Updated: 2018/09/29 02:42:21 by csinglet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,7 @@ FILES		= ft_memset.c\
 			  ft_itoa_base.c\
 			  ft_lltoa_base.c\
 			  ft_llutoa_base.c\
-			  ft_ultoa.c\
+			  ft_lutoa.c\
 			  ft_putchar.c\
 			  ft_putstr.c\
 			  ft_putendl.c\

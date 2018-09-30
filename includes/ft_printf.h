@@ -6,15 +6,16 @@
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 16:27:25 by csinglet          #+#    #+#             */
-/*   Updated: 2018/09/17 16:27:26 by csinglet         ###   ########.fr       */
+/*   Updated: 2018/09/29 02:38:58 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
+# include <unistd.h>
+# include <stdlib.h>
 # include <stdarg.h>
-# include "libft.h"
 
 // Specifiers: sSpdDioOuUxXcC
 
@@ -96,5 +97,35 @@ void				*get_arg_info(char *str, t_arg_info *arg_info);
 */
 
 void				add_padding(char **str, char *arg, int padding);
+
+/*
+**	utils
+**
+**	These are functions from my libft repository. The reason I did not
+**	include my libft repository is I am not sure how to merge archives
+**	so the simple solution was to copy the c files and archive them along
+**	with the printf c files
+*/
+
+int					ft_atoi(const char *str);
+int					ft_copy_until(char **dest, char *src, int stop);
+int					ft_isdigit(int c);
+char				*ft_itoa(int n);
+char				*ft_lltoa_base(long long n, int base, int upper);
+char				*ft_llutoa_base(unsigned long long n, int base, int upper);
+void				*ft_memcpy(void *dest, const void *src, size_t size);
+void				*ft_memset(void *ptr, int value, size_t length);
+int					ft_numlen(unsigned long long n);
+void				ft_putchar(char c);
+void				ft_putnbr(int n);
+void				ft_putstr(char const *s);
+char				*ft_strcpy(char *dest, const char *src);
+char				*ft_strdup(const char *src);
+char				*ft_strjoin(char const *s1, char const *s2);
+char				*ft_strjoin_free(char *s1, char *s2);
+char				*ft_strjoin_free_s1(char *s1, const char *s2);
+size_t				ft_strlen(const char *str);
+char				*ft_strnew(size_t size);
+
 
 #endif
