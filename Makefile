@@ -33,6 +33,7 @@ test: $(OBJ)
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: $@"
+	@make -C libft
 	@cp libft/libft.a ./$(NAME)
 	@ar rc $@ $(OBJ)
 	@ranlib $@
@@ -47,8 +48,10 @@ build/%.o: srcs/%.c | build
 
 clean:
 	@rm -fr build
+	@make -C libft clean
 
 fclean: clean
 	@rm -f $(NAME)
+	@make -C libft fclean
 
 re: fclean all

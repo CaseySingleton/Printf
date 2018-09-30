@@ -107,7 +107,6 @@ build:
 	mkdir build
 
 build/%.o: srcs/%.c | build
-	@echo "Building $@"
 	@$(CC) $(FLAGS) -I includes -c $< -o $@
 
 clean:
