@@ -12,16 +12,29 @@
 
 #include "libft.h"
 
-char		*ft_llutoa_base(unsigned long long n, int base, int upper)
+static int		ft_numlen_base(unsigned long long n, int base)
 {
-	char	*ret;
-	int		num_len;
+	int			len;
 
+	len = 0;
+	while (n > 0)
+	{
+		n /= base;
+		len++;
+	}
+	return (len);
+}
+
+char			*ft_llutoa_base(unsigned long long n, int base, int upper)
+{
+	char		*ret;
+	int			num_len;
+
+	if (n == 0)
+		return (ft_strdup("0"));
 	if (base < 2 || base > 16)
 		return (NULL);
-	if (base == 10)
-		return (ft_itoa((int)n));
-	num_len = ft_numlen(n);
+	num_len = ft_numlen_base(n, base);
 	ret = ft_strnew(num_len);
 	while (--num_len >= 0)
 	{

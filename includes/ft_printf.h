@@ -14,12 +14,13 @@
 # define FT_PRINTF_H
 
 # include <unistd.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <stdarg.h>
 
 // Specifiers: sSpdDioOuUxXcC
 
-# define FLAG_CHECK(c) (c == 'h' || c == 'l' || c == 'j' || c == 'z') ? 1 : 0
+# define FLAG_CHECK(c) (c == 'h' || c == 'l' || c == 'j' || c == 'z') ? 0 : 1
 # define NUM_SPECIFIERS 14
 # define NUM_FLAGS 6
 
@@ -53,6 +54,7 @@ typedef struct		s_arg_info
 	int				width;
 	int				precision;
 	int				padding;
+	int				pad_zeros;
 }					t_arg_info;
 
 /*
@@ -66,22 +68,25 @@ void				print_arg_info(t_arg_info *arg_info);
 **	argument_parsing.c
 */
 
-void				get_flags(char *str, t_arg_info *arg_info);
-void				get_padding(char *str, t_arg_info *arg_info);
-void				get_precision(char *str, t_arg_info *arg_info);
+int					get_flags(char *str, t_arg_info *arg_info, int i);
+int					get_padding(char *str, t_arg_info *arg_info, int i);
+int					get_precision(char *str, t_arg_info *arg_info, int i);
 int					specifier_check(char c);
-void				get_specifier(char *str, t_arg_info *arg_info);
+int					get_specifier(char *str, t_arg_info *arg_info, int i);
 
 /*
 **	argument_handling.c
 */
 
-void				insert_arg(char **str, char *arg, int padding);
-char				*s_arg(va_list arg);
-char				*d_arg(va_list arg);
-char				*p_arg(va_list arg);
-char				*o_arg(va_list arg);
-char				*u_arg(va_list arg);
+void				insert_arg(char **str, t_arg_info *arg_info);
+char				*s_arg(va_list arg, t_arg_info *arg_info);
+char				*d_arg(va_list arg, t_arg_info *arg_info);
+char				*p_arg(va_list arg, t_arg_info *arg_info);
+char				*o_arg(va_list arg, t_arg_info *arg_info);
+char				*u_arg(va_list arg, t_arg_info *arg_info);
+char				*x_arg(va_list arg, t_arg_info *arg_info);
+char				*xx_arg(va_list arg, t_arg_info *arg_info);
+char				*percent_arg(va_list arg, t_arg_info *arg_info);
 char				*get_type(void *arg);
 
 /*
@@ -90,13 +95,13 @@ char				*get_type(void *arg);
 
 t_arg_info			*arg_info_init(void);
 void				print_arg_info(t_arg_info *arg_info);
-void				*get_arg_info(char *str, t_arg_info *arg_info);
+int					get_arg_info(char *str, t_arg_info *arg_info);
 
 /*
 **	padding.c
 */
 
-void				add_padding(char **str, char *arg, int padding);
+void				add_padding(char **str, t_arg_info *arg_info);
 
 /*
 **	utils
@@ -107,6 +112,7 @@ void				add_padding(char **str, char *arg, int padding);
 **	with the printf c files
 */
 
+int					ft_abs(int i);
 int					ft_atoi(const char *str);
 int					ft_copy_until(char **dest, char *src, int stop);
 int					ft_isdigit(int c);
@@ -126,6 +132,8 @@ char				*ft_strjoin_free(char *s1, char *s2);
 char				*ft_strjoin_free_s1(char *s1, const char *s2);
 size_t				ft_strlen(const char *str);
 char				*ft_strnew(size_t size);
+char				*ft_strndup(const char *str, size_t n);
+char				*ft_uitoa_base(int n, int base, int upper);
 
 
 #endif

@@ -26,27 +26,24 @@
 **	A negative value will place spaces to the left
 */
 
-static int		ft_abs(int value)
-{
-	if (value < 0)
-		value *= -1;
-	return (value);
-}
-
-void			add_padding(char **str, char *arg, int padding)
+void			add_padding(char **str, t_arg_info *arg_info)
 {
 	char		*spaces;
 	char		*temp;
+	int			padding;
 	int			arg_len;
 
-	arg_len = ft_strlen(arg);
+	if (arg_info->padding < 0)
+		padding = -1 * arg_info->padding;
+	else
+		padding = arg_info->padding;
+	arg_len = ft_strlen(arg_info->arg);
 	if (padding == 0 || arg_len >= padding)
 		return ;
 	spaces = ft_strnew(padding - arg_len);
-	ft_memset(spaces, ' ', padding - arg_len);
-	temp = ft_strjoin(*str, spaces);
-	free(*str);
-	*str = ft_strdup(temp);
-	free(temp);
-	free(spaces);
+	if (arg_info->pad_zeros == 1)
+		ft_memset(spaces, '0', padding - arg_len);
+	else
+		ft_memset(spaces, ' ', padding - arg_len);
+	*str = ft_strjoin_free(*str, spaces);
 }

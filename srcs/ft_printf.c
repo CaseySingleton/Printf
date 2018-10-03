@@ -41,32 +41,33 @@ typedef struct		s_print
 
 
 
-void				handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list))
+int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_arg_info *arg_info))
 {
+	int				i;
 	t_arg_info		*arg_info;
 
 	arg_info = arg_info_init();
-	get_arg_info(master, arg_info);
-	// ft_putstr("arg_info->specifier: ");
-	// ft_putnbr(arg_info->specifier);
-	// ft_putchar('\n');
+	i = get_arg_info(master, arg_info);
 	if (arg_info->specifier == 'o')
-		arg_info->arg = f[6](ap);
+		arg_info->arg = f[6](ap, arg_info);
 	else if (arg_info->specifier == 'c')
-		arg_info->arg = f[10](ap);
+		arg_info->arg = f[10](ap, arg_info);
+	else if (arg_info->specifier == '%')
+		arg_info->arg = percent_arg(ap, arg_info);
 	else
-		arg_info->arg = f[arg_info->hash_key](ap);
-	insert_arg(str, arg_info->arg, arg_info->padding);
+		arg_info->arg = f[arg_info->hash_key](ap, arg_info);
+	insert_arg(str, arg_info);
 	free(arg_info->arg);
 	free(arg_info);
+	return (i);
 }
 
-// s S  p d D  i o  O u U! x X c C!
+// s  S  p  d  D  i  o  O  u  U  x  X  c  C  %
 
-// 3 13 0 2 12 7 13 9 5 1  8 4 1 11
+// 10 8  7  10 8  0  6  4  12 10 0  13 9  7  7
 
 // 0 1(2) 2 3 4 5 # 7 8 9 # 11 13(2) No 10 or 6
-void				hash_init(char *(**f)(va_list))
+void				hash_init(char *(**f)(va_list, t_arg_info *))
 {
 	f[6] = &o_arg; // set equal to function that handles 'o' specifier
 	f[10] = NULL; // set equal to the function that handles 'c' specifier
@@ -77,11 +78,13 @@ void				hash_init(char *(**f)(va_list))
 	f['i' % NUM_SPECIFIERS] = &d_arg;
 	f['p' % NUM_SPECIFIERS] = &p_arg;
 	f['u' % NUM_SPECIFIERS] = &u_arg;
+	f['x' % NUM_SPECIFIERS] = &x_arg;
+	f['X' % NUM_SPECIFIERS] = &x_arg;
 }
 
 void				handle_all_args(char *master, char **str, va_list ap)
 {
-	char			*(*function_hash[NUM_SPECIFIERS])(va_list arg);
+	char			*(*function_hash[NUM_SPECIFIERS])(va_list arg, t_arg_info *arg_info);
 	char			*temp;
 	int				i;
 
@@ -91,16 +94,14 @@ void				handle_all_args(char *master, char **str, va_list ap)
 	while (master[i] != '\0')
 	{
 		i += ft_copy_until(&temp, master + i, '%');
-		*str = ft_strjoin_free(*str, temp);
+		if (i > 0)
+			*str = ft_strjoin_free(*str, temp);
 		if (master[i] == '\0')
 			break ;
-		handle_arg(master + i, str, ap, function_hash);
-		while (specifier_check(master[i]) != 1 && master[i] != '\0')
-			i++;
-		if (specifier_check(master[i]) == 1 && master[i] != '\0' && master[i + 1] != '\0')
-			i++;
+		i += handle_arg(master + i, str, ap, function_hash);
 	}
-	*str = ft_strjoin_free_s1(*str, master + i);
+	if (master[i] != '\0')
+		*str = ft_strjoin_free_s1(*str, master + i);
 }
 
 /*
@@ -112,16 +113,17 @@ int					ft_printf(const char *format, ...)
 	va_list			ap;
 	char			*master;
 	char			*str;
-	int				i;
+	int				ret;
 
 	va_start(ap, format);
 	master = ft_strdup(format);
 	str = ft_strnew(0);
 	handle_all_args(master, &str, ap);
 	ft_putstr(str);
+	ret = ft_strlen(str);
 	free(master);
 	free(str);
-	return (0);
+	return (ret);
 }
 
 /*

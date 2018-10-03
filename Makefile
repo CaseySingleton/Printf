@@ -22,6 +22,8 @@ FILES			= ft_printf.c argument_parsing.c padding.c \
 SRC				= $(addprefix srcs/, $(FILES))
 OBJ				= $(addprefix build/, $(FILES:.c=.o))
 
+INC_LIBFT		= -I libft/includes
+
 all: $(NAME)
 
 ft:

@@ -6,7 +6,7 @@
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/24 17:03:02 by csinglet          #+#    #+#             */
-/*   Updated: 2018/05/08 15:08:34 by csinglet         ###   ########.fr       */
+/*   Updated: 2018/10/02 17:15:35 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+int					ft_abs(int i);
 void				*ft_memset(void *ptr, int value, size_t length);
 void				ft_bzero(void *str, unsigned int length);
 void				*ft_memcpy(void *dest, const void *src, size_t size);
@@ -36,6 +37,7 @@ size_t				ft_strlen(const char *str);
 char				*ft_strdup(const char *src);
 char				*ft_strcpy(char *dest, const char *src);
 char				*ft_strncpy(char *dest, const char *src, size_t length);
+char				*ft_strndup(const char *src, size_t n);
 char				*ft_strcat(char *dest, const char *addition);
 char				*ft_strncat(char *dest, const char *addition,
 								size_t length);
@@ -104,6 +106,7 @@ void				ft_putspace(int num_spaces);
 int					ft_ascii_cmp(char *s1, char *s2);
 void				ft_sort_list_ascii(char ***lst, int start, int stop);
 void				ft_free_strsplit(char ***strings);
-char				*ft_itoa_base(int n, int base);
+char				*ft_uitoa_base(int n, int base, int upper);
+char				*ft_itoa_base(int n, int base, int upper);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: csinglet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/22 18:59:57 by csinglet          #+#    #+#              #
-#    Updated: 2018/09/29 02:42:21 by csinglet         ###   ########.fr        #
+#    Updated: 2018/10/02 17:16:05 by csinglet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ NAME		= libft.a
 CC			= gcc
 CFLAGS		= -Wall -Werror -Wextra
 
-FILES		= ft_memset.c\
+FILES		= ft_abs.c\
+			  ft_memset.c\
 			  ft_bzero.c\
 			  ft_memcpy.c\
 			  ft_memccpy.c\
@@ -26,6 +27,7 @@ FILES		= ft_memset.c\
 			  ft_strdup.c\
 			  ft_strcpy.c\
 			  ft_strncpy.c\
+			  ft_strndup.c\
 			  ft_strcat.c\
 			  ft_strncat.c\
 			  ft_strlcat.c\
@@ -86,6 +88,7 @@ FILES		= ft_memset.c\
 			  ft_pow.c\
 			  ft_numlen.c\
 			  ft_lstlen.c\
+			  ft_uitoa.c\
 			  ft_wrdcount.c\
 			  ft_realloc_str.c\
 			  ft_copy_until.c\
@@ -104,7 +107,7 @@ $(NAME): $(OBJ)
 	@ar rcs $@ $(OBJ)
 
 build:
-	mkdir build
+	@mkdir build
 
 build/%.o: srcs/%.c | build
 	@$(CC) $(FLAGS) -I includes -c $< -o $@
