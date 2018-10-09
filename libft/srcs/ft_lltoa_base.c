@@ -19,8 +19,8 @@ char		*ft_lltoa_base(long long n, int base, int upper)
 
 	if (base < 2 || base > 16)
 		return (NULL);
-	if (base == 10)
-		return (ft_itoa((int)n));
+	if (n == 0)
+		return ((ret = ft_strdup("0")));
 	num_len = ft_numlen(n) + ((n < 0) ? 1 : 0);
 	ret = ft_strnew(num_len);
 	while (--num_len >= ((n < 0) ? 1 : 0))

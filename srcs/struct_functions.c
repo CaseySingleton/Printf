@@ -19,32 +19,47 @@ t_arg_info			*arg_info_init(void)
 	if (!(new = (t_arg_info *)malloc(sizeof(t_arg_info))))
 		return (NULL);
 	new->arg = NULL;
-	new->specifier = -1;
+	new->specifier = '\0';
+	new->specifier_mod = '\0';
 	new->flag = -1;
 	new->width = 0;
-	new->precision = 0;
-	new->padding = -1;
+	new->precision = -1;
+	new->padding = 0;
+	new->rev_padding = 0;
 	new->pad_zeros = 0;
+	new->neg_flag = 0;
+	new->pos_flag = 0;
+	new->count_spaces = 0;
 	return (new);
 }
 
 void				print_arg_info(t_arg_info *arg_info)
 {
-	ft_putstr("arg_info->flag: ");
+	ft_putstr("\narg_info->arg: ");
+	ft_putstr(arg_info->arg);
+	ft_putstr("\narg_info->specifier: ");
+	ft_putchar(arg_info->specifier);
+	ft_putstr("\narg_info->specifier_mod: ");
+	ft_putnbr(arg_info->specifier_mod);
+	ft_putstr("\narg_info->flag: ");
 	ft_putnbr(arg_info->flag);
-	ft_putchar('\n');
-	ft_putstr("arg_info->padding: ");
+	ft_putstr("\narg_info->padding: ");
 	ft_putnbr(arg_info->padding);
-	ft_putchar('\n');
-	ft_putstr("arg_info->precision: ");
+	ft_putstr("\narg_info->rev_padding: ");
+	ft_putnbr(arg_info->rev_padding);
+	ft_putstr("\narg_info->pad_zeros: ");
+	ft_putnbr(arg_info->pad_zeros);
+	ft_putstr("\narg_info->precision: ");
 	ft_putnbr(arg_info->precision);
-	ft_putchar('\n');
-	ft_putstr("arg_info->specifier: ");
-	ft_putnbr(arg_info->specifier);
-	ft_putchar('\n');
-	ft_putstr("arg_info->hash_key: ");
+	ft_putstr("\narg_info->hash_key: ");
 	ft_putnbr(arg_info->hash_key);
-	ft_putstr("\n\n");
+	ft_putstr("\narg_info->neg_flag: ");
+	ft_putnbr(arg_info->neg_flag);
+	ft_putstr("\narg_info->pos_flag: ");
+	ft_putnbr(arg_info->pos_flag);
+	ft_putstr("\narg_info->count_spaces: ");
+	ft_putnbr(arg_info->count_spaces);
+	ft_putstr("\n");
 }
 
 /*
@@ -58,15 +73,15 @@ int					get_arg_info(char *str, t_arg_info *arg_info)
 	int				i;
 
 	i = 1;
-	// printf("start -> str: %s\n", str);
+	other_get_specifier(str, arg_info, i);
+	if (arg_info->specifier == 'd')
+		return (d_arg_parse(str, arg_info, i));
+	i = get_mods(str, arg_info, i);
 	i = get_flags(str, arg_info, i);
-	// printf("after get_flags() -> str[%d]: %c\n", i, str[i]);
 	i = get_padding(str, arg_info, i);
-	// printf("after get_padding() -> str[%d]: %c\n", i, str[i]);
 	i = get_precision(str, arg_info, i);
-	// printf("after get_precision() -> str[%d]: %c\n", i, str[i]);
-	i = get_specifier(str, arg_info, i);
-	// printf("after get_a_room fuck -> str[%d]: %c\n", i, str[i]);
-	// print_arg_info(arg_info);
+	while (specifier_check(str[i]) != 1)
+		i++;
+	i++;
 	return (i);
 }

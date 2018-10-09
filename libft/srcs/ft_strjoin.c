@@ -19,7 +19,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int		index;
 
 	if (s1 == NULL || s2 == NULL)
-		return (0);
+		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
 	new_str = ft_strnew(len);
 	new_str[len] = '\0';

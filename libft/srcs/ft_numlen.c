@@ -16,8 +16,11 @@ int		ft_numlen(unsigned long long n)
 {
 	int		len;
 
-	len = 1;
-	while (n /= 10)
+	len = 0;
+	while (n != 0)
+	{
+		n /= 10;
 		len++;
+	}
 	return (len);
 }

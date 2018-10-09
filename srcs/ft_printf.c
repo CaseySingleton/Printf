@@ -50,14 +50,11 @@ int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_
 	i = get_arg_info(master, arg_info);
 	if (arg_info->specifier == 'o')
 		arg_info->arg = f[6](ap, arg_info);
-	else if (arg_info->specifier == 'c')
-		arg_info->arg = f[10](ap, arg_info);
 	else if (arg_info->specifier == '%')
 		arg_info->arg = percent_arg(ap, arg_info);
 	else
 		arg_info->arg = f[arg_info->hash_key](ap, arg_info);
-	insert_arg(str, arg_info);
-	free(arg_info->arg);
+	*str = ft_strjoin_free(*str, arg_info->arg);
 	free(arg_info);
 	return (i);
 }
@@ -71,15 +68,16 @@ void				hash_init(char *(**f)(va_list, t_arg_info *))
 {
 	f[6] = &o_arg; // set equal to function that handles 'o' specifier
 	f[10] = NULL; // set equal to the function that handles 'c' specifier
-	f['s' % NUM_SPECIFIERS] = &s_arg;
-	f['S' % NUM_SPECIFIERS] = &s_arg;
-	f['d' % NUM_SPECIFIERS] = &d_arg;
-	f['D' % NUM_SPECIFIERS] = &d_arg;
-	f['i' % NUM_SPECIFIERS] = &d_arg;
-	f['p' % NUM_SPECIFIERS] = &p_arg;
-	f['u' % NUM_SPECIFIERS] = &u_arg;
-	f['x' % NUM_SPECIFIERS] = &x_arg;
-	f['X' % NUM_SPECIFIERS] = &x_arg;
+	f['s' % NUM_SPECIFIERS] = &s_arg; // 3
+	f['S' % NUM_SPECIFIERS] = &s_arg; // 13
+	f['c' % NUM_SPECIFIERS] = &c_arg; // 1
+	f['d' % NUM_SPECIFIERS] = &d_arg; // 2
+	f['D' % NUM_SPECIFIERS] = &d_arg; // 12
+	f['i' % NUM_SPECIFIERS] = &d_arg; // 7
+	f['p' % NUM_SPECIFIERS] = &p_arg; // 0
+	f['u' % NUM_SPECIFIERS] = &u_arg; // 5
+	f['x' % NUM_SPECIFIERS] = &x_arg; // 8
+	f['X' % NUM_SPECIFIERS] = &x_arg; // 4
 }
 
 void				handle_all_args(char *master, char **str, va_list ap)

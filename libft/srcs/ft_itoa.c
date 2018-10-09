@@ -18,20 +18,19 @@ char			*ft_itoa(int n)
 	int				len;
 	unsigned int	ncpy;
 
-	len = ft_numlen(n);
 	ncpy = n;
-	if (n < 0)
-		len++;
-	if (!(str = (char *)malloc(len + 1)))
+	len = ft_numlen(ncpy *= ((n < 0) ? -1 : 1));
+	if (n == 0)
+		return (str = ft_strdup("0"));
+	else if (!(str = ft_strnew(len += ((n < 0) ? 1 : 0))))
 		return (NULL);
 	str[len--] = '\0';
 	if (n < 0)
-	{
-		ncpy *= -1;
 		str[0] = '-';
-	}
-	str[len--] = (ncpy % 10) + '0';
-	while (ncpy /= 10)
+	while (ncpy != 0 && str[len] != '-')
+	{
 		str[len--] = (ncpy % 10) + '0';
+		ncpy /= 10;
+	}
 	return (str);
 }

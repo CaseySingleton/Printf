@@ -12,42 +12,74 @@
 
 #include "ft_printf.h"
 
-int				specifier_check(char c)
-{
-	if (c == 's' || c == 'S' || c == 'p' || c == 'd' || c == 'D' || c == 'i'
-		|| c == 'o' || c == 'O' || c == 'u' || c == 'U' || c == 'x' || c == 'X'
-		|| c == 'c' || c == 'C' || c == '%')
-		return (1);
-	return (0);
-}
-
 // flags: hh, h, l, ll, j, z
+
+/*
+**	# can be before or after -
+**
+**	if there are spaces between % and d and there is nothing but spaces
+**	between the two, those spaces are added to the front of the d arg
+**	(%+d, 42)    -> '+42'
+**	(% d, 42)    -> ' 42'
+**	(%+ d, 42)   -> '+42'
+**	(% +d, 42)   -> '+42'
+**	(%+  d, 42)  -> '+42'
+**	(% ++d, 42)  -> '+42'
+**	(%++ d, 42)  -> '+42'
+**	(%0+5d, 42)  -> '+0042' the '+' takes up a padding spot
+**	(%05d, -42)  -> '-0042' same goes for if the number is negative
+**	(%0+5d, -42) -> '-0042'
+**	looks like if a postive symbol is given but the number is negative,
+**	the number being negative wins over the positive symbol
+**
+**	so the question is: how do I parse all the info correctly for %d while
+**	not messing up anything for the other specifiers?
+**
+**	I could go back through the string if the specifier == 'd' and parse again?
+**	But that seems slow seeing as I would have to iterate a second time
+*/
+
+int				get_mods(char *str, t_arg_info *arg_info, int i)
+{
+	if (str[i] == '#')
+		arg_info->specifier_mod = str[i++];
+	if (str[i] == '-')
+	{
+		arg_info->rev_padding = 1;
+		i++;
+	}
+	if (str[i] == '#')
+		arg_info->specifier_mod = str[i++];
+	if (str[i] == '0')
+	{
+		arg_info->pad_zeros = 1;
+		i++;
+	}
+	return (i);
+}
 
 int				get_flags(char *str, t_arg_info *arg_info, int i)
 {
 	if (str[i] != 'h' && str[i] != 'l' && str[i] != 'j' && str[i] != 'z')
-	{
 		arg_info->flag = -1;
-		return (i);
-	}
 	else if (str[i] == str[i + 1])
 	{
-		arg_info->flag = (str[i] + 31) % NUM_FLAGS;
-		return (i + 2);
+		arg_info->flag = (str[i] + str[i]);
+		i += 2;
 	}
 	else
-		arg_info->flag = (str[i] % NUM_FLAGS);
+		arg_info->flag = str[i];
 	return (i);
 }
 
 int				get_padding(char *str, t_arg_info *arg_info, int i)
 {
-	if ((!ft_isdigit(str[i]) && str[i] != '-') || str[i] == '\0')
+	if (!ft_isdigit(str[i]))
 	{
 		arg_info->padding = 0;
 		return (i);
 	}
-	if (str[i] == '0' || (str[i] == '-' && str[i + 1] == '0'))
+	if (str[i] == '0' || (str[i] == '0' && !ft_isdigit(str[i + 1])))
 		arg_info->pad_zeros = 1;
 	arg_info->padding = ft_atoi(str + i);
 	if (arg_info->padding < 0)
@@ -62,15 +94,23 @@ int				get_padding(char *str, t_arg_info *arg_info, int i)
 
 int				get_precision(char *str, t_arg_info *arg_info, int i)
 {
-	if (str[i] != '.' || str[i] == '\0')
+	if (str[i] != '.')
 		return (i);
-	arg_info->precision = ft_atoi(str + ++i);
-	if (arg_info->precision < 0)
+	i++;
+	if (str[i] == '+')
+		i++;
+	if (ft_isdigit(str[i]))
 	{
-		ft_putstr("Precision can not be negative\n");
-		exit(-1);
+		arg_info->precision = ft_atoi(str + i);
+		if (arg_info->precision < 0)
+		{
+			ft_putstr("Precision can not be negative\n");
+			exit(-1);
+		}
 	}
-	if (arg_info->precision != 0)
+	else
+		arg_info->precision = 0;
+	if (arg_info->precision > 0)
 		return (i += ft_numlen(arg_info->precision));
 	return (i);
 }
@@ -79,6 +119,17 @@ int				get_precision(char *str, t_arg_info *arg_info, int i)
 **	printf format: %[char flags][num width][num .precision][num length] char specifier
 **	Specifiers: sSpdDioOuUxXcC
 */
+
+void			other_get_specifier(char *str, t_arg_info *arg_info, int i)
+{
+	while (specifier_check(str[i]) != 1 && str[i] != '\0')
+		i++;
+	if (str[i] != '\0')
+	{
+		arg_info->specifier = str[i];
+		arg_info->hash_key = str[i] % NUM_SPECIFIERS;
+	}
+}
 
 int				get_specifier(char *str, t_arg_info *arg_info, int i)
 {

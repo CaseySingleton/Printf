@@ -17,7 +17,8 @@ CFLAGS			= -Wall -Werror -Wextra
 FLAGS			= $(CFLAGS)
 
 FILES			= ft_printf.c argument_parsing.c padding.c \
-				  struct_functions.c argument_handling.c error_handling.c
+				  struct_functions.c argument_handling.c error_handling.c \
+				  d_arg.c x_arg.c utils.c
 
 SRC				= $(addprefix srcs/, $(FILES))
 OBJ				= $(addprefix build/, $(FILES:.c=.o))
@@ -30,12 +31,13 @@ ft:
 	@make -C libft
 	@make re
 
-test: $(OBJ)
-	@$(CC) $(FLAGS) -I includes $(OBJ) -o printf
+test: $(NAME)
+	@$(CC) main.c $(NAME) -o printf
 
 $(NAME): $(OBJ)
-	@echo "Creating archive: $@"
+	@echo "Creating archive: libft.a"
 	@make -C libft
+	@echo "Creating archive: $@"
 	@cp libft/libft.a ./$(NAME)
 	@ar rc $@ $(OBJ)
 	@ranlib $@

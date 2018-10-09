@@ -17,6 +17,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdarg.h>
+# include <stdint.h>
+# include "libft.h"
 
 // Specifiers: sSpdDioOuUxXcC
 
@@ -49,12 +51,17 @@ typedef struct		s_arg_info
 {
 	char			*arg;
 	char			specifier;
+	char			specifier_mod;
 	int				hash_key;
 	int				flag;
 	int				width;
 	int				precision;
 	int				padding;
+	int				rev_padding;
 	int				pad_zeros;
+	int				neg_flag;
+	int				pos_flag;
+	int				count_spaces;
 }					t_arg_info;
 
 /*
@@ -68,26 +75,41 @@ void				print_arg_info(t_arg_info *arg_info);
 **	argument_parsing.c
 */
 
+int					get_mods(char *str, t_arg_info *arg_info, int i);
 int					get_flags(char *str, t_arg_info *arg_info, int i);
 int					get_padding(char *str, t_arg_info *arg_info, int i);
 int					get_precision(char *str, t_arg_info *arg_info, int i);
-int					specifier_check(char c);
+void				other_get_specifier(char *str, t_arg_info *arg_info, int i);
 int					get_specifier(char *str, t_arg_info *arg_info, int i);
 
 /*
 **	argument_handling.c
 */
 
+void			handle_precision(char **str, t_arg_info *arg_info);
 void				insert_arg(char **str, t_arg_info *arg_info);
 char				*s_arg(va_list arg, t_arg_info *arg_info);
-char				*d_arg(va_list arg, t_arg_info *arg_info);
+char				*c_arg(va_list arg, t_arg_info *arg_info);
 char				*p_arg(va_list arg, t_arg_info *arg_info);
 char				*o_arg(va_list arg, t_arg_info *arg_info);
 char				*u_arg(va_list arg, t_arg_info *arg_info);
-char				*x_arg(va_list arg, t_arg_info *arg_info);
-char				*xx_arg(va_list arg, t_arg_info *arg_info);
 char				*percent_arg(va_list arg, t_arg_info *arg_info);
 char				*get_type(void *arg);
+
+/*
+**	d_arg.c
+*/
+
+int					d_arg_parse(char *str, t_arg_info *arg_info, int i);
+char				*d_arg(va_list arg, t_arg_info *arg_info);
+
+/*
+**	x_arg.c
+*/
+
+void				x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info);
+char				*x_arg(va_list arg, t_arg_info *arg_info);
+
 
 /*
 **	struct_functions.c
@@ -101,39 +123,16 @@ int					get_arg_info(char *str, t_arg_info *arg_info);
 **	padding.c
 */
 
-void				add_padding(char **str, t_arg_info *arg_info);
+void				add_spaces(char **str, t_arg_info *arg_info);
+char				*add_padding(char *str, t_arg_info *arg_info);
+void				handle_padding(char **str, t_arg_info *arg_info);
 
 /*
-**	utils
-**
-**	These are functions from my libft repository. The reason I did not
-**	include my libft repository is I am not sure how to merge archives
-**	so the simple solution was to copy the c files and archive them along
-**	with the printf c files
+**	utils.c
 */
 
-int					ft_abs(int i);
-int					ft_atoi(const char *str);
-int					ft_copy_until(char **dest, char *src, int stop);
-int					ft_isdigit(int c);
-char				*ft_itoa(int n);
-char				*ft_lltoa_base(long long n, int base, int upper);
-char				*ft_llutoa_base(unsigned long long n, int base, int upper);
-void				*ft_memcpy(void *dest, const void *src, size_t size);
-void				*ft_memset(void *ptr, int value, size_t length);
-int					ft_numlen(unsigned long long n);
-void				ft_putchar(char c);
-void				ft_putnbr(int n);
-void				ft_putstr(char const *s);
-char				*ft_strcpy(char *dest, const char *src);
-char				*ft_strdup(const char *src);
-char				*ft_strjoin(char const *s1, char const *s2);
-char				*ft_strjoin_free(char *s1, char *s2);
-char				*ft_strjoin_free_s1(char *s1, const char *s2);
-size_t				ft_strlen(const char *str);
-char				*ft_strnew(size_t size);
-char				*ft_strndup(const char *str, size_t n);
-char				*ft_uitoa_base(int n, int base, int upper);
-
+void				check_pos_flag(char *str, t_arg_info *arg_info, int i);
+int					check_only_spaces(char *str, t_arg_info *arg_info, int i);
+int					specifier_check(char c);
 
 #endif
