@@ -154,12 +154,12 @@ char				*d_arg(va_list arg, t_arg_info *arg_info)
 		i = (int)i;
 	if (i == 0 && arg_info->precision == 0)
 		ret = ft_strnew(0);
-	else if (arg_info->flag == 'z')
+	else if (arg_info->flag == 'h')
 		ret = ft_llutoa_base(i, 10, 0);
 	else
 		ret = ft_lltoa_base(ft_abs(i), 10, 0);
 	handle_precision(&ret, arg_info);
-	if (i < 0 && ret[0] != '-')
+	if (i < 0 && ret[0] != '-' && i != UINTMAX_MAX)
 		arg_info->neg_flag = 1;
 	d_arg_add_padding(&ret, arg_info);
 	return (ret);

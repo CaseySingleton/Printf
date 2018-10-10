@@ -32,6 +32,8 @@ char			*ft_llutoa_base(uintmax_t n, int base, int upper)
 
 	if (n == 0)
 		return (ft_strdup("0"));
+	if (n == UINTMAX_MAX)
+		return (ft_strdup("18446744073709551615"));
 	if (base < 2 || base > 16)
 		return (NULL);
 	num_len = ft_numlen_base(n, base);
