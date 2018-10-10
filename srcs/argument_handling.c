@@ -146,7 +146,8 @@ char					*percent_arg(va_list arg, t_arg_info *arg_info)
 **	use it for yet. _Generic() is pretty sweet
 */
 
-/* char					*get_type(void *arg)
+/*
+** char					*get_type(void *arg)
 ** {
 ** 	return (_Generic(arg[0], char: "char", int: "int", default: "other"));
 ** }

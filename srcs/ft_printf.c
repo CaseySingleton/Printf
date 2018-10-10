@@ -50,6 +50,8 @@ int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_
 	i = get_arg_info(master, arg_info);
 	if (arg_info->specifier == 'o')
 		arg_info->arg = f[6](ap, arg_info);
+	else if (arg_info->specifier == 'C')
+		arg_info->arg = f['c' % NUM_SPECIFIERS](ap, arg_info);
 	else if (arg_info->specifier == '%')
 		arg_info->arg = percent_arg(ap, arg_info);
 	else
