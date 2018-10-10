@@ -79,6 +79,7 @@ char					*u_arg(va_list arg, t_arg_info *arg_info)
 	else
 		i = (unsigned int)va_arg(arg, unsigned long long);
 	ret = ft_llutoa_base(i, 10, (arg_info->specifier == 'U' ? 1 : 0));
+	handle_precision(&ret, arg_info);
 	handle_padding(&ret, arg_info);
 	return (ret);
 }
@@ -125,11 +126,6 @@ char					*c_arg(va_list arg, t_arg_info *arg_info)
 
 	ret = ft_strnew(1);
 	*ret = va_arg(arg, int);
-	if (*ret == '\0' || arg_info->precision != -1)
-	{
-		free(ret);
-		ret = ft_strdup("\\0");
-	}
 	handle_padding(&ret, arg_info);
 	return (ret);
 }

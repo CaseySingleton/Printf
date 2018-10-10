@@ -51,4 +51,9 @@ int				check_only_spaces(char *str, t_arg_info *arg_info, int i)
 	arg_info->count_spaces = 0;
 	return (i);
 }
+/*
+char			*check_max_values()
+{
 
+}
+*/
