@@ -25,7 +25,7 @@ static int		ft_numlen_base(uintmax_t n, int base)
 	return (len);
 }
 
-char			*ft_llutoa_base(unsigned long long n, int base, int upper)
+char			*ft_llutoa_base(uintmax_t n, int base, int upper)
 {
 	char		*ret;
 	int			num_len;

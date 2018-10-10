@@ -52,9 +52,6 @@ static void			d_arg_add_sign(char **fill, char **str, t_arg_info *arg_info)
 
 int					d_arg_parse(char *str, t_arg_info *arg_info, int i)
 {
-	int				j;
-
-	j = 0;
 	check_pos_flag(str, arg_info, i);
 	i = check_only_spaces(str, arg_info, i);
 	while (str[i] == '+' || str[i] == ' ')
@@ -99,7 +96,7 @@ static char			*d_arg_get_padding(char *str, t_arg_info *arg_info)
 			ft_memset(fill, ' ', len);
 	}
 	else
-		fill = ft_strnew(1);
+		fill = ft_strnew(0);
 	return (fill);
 }
 
@@ -158,7 +155,7 @@ char				*d_arg(va_list arg, t_arg_info *arg_info)
 	if (i == 0 && arg_info->precision == 0)
 		ret = ft_strnew(0);
 	else
-		ret = ft_llutoa_base(ft_abs(i), 10, 0);
+		ret = ft_lltoa_base(ft_abs(i), 10, 0);
 	handle_precision(&ret, arg_info);
 	if (i < 0 && ret[0] != '-')
 		arg_info->neg_flag = 1;

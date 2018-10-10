@@ -12,7 +12,20 @@
 
 #include "libft.h"
 
-int		ft_numlen(unsigned long long n)
+int		ft_numlen(intmax_t n)
+{
+	int		len;
+
+	len = 0;
+	while (n != 0)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+int		ft_unumlen(uintmax_t n)
 {
 	int		len;
 

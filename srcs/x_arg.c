@@ -77,9 +77,9 @@ static void		x_arg_add_padding(char **str, t_arg_info *arg_info)
 	if (arg_info->precision != 0)
 		x_arg_add_0x(&fill, str, arg_info);
 	if (arg_info->rev_padding != 1)
-		*str = ft_strjoin_free_s1(fill, *str);
+		*str = ft_strjoin_free(fill, *str);
 	else
-		*str = ft_strjoin_free_s2(*str, fill);
+		*str = ft_strjoin_free(*str, fill);
 }
 
 /*
