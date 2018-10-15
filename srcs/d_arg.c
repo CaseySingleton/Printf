@@ -21,146 +21,223 @@
 **	  beginning of the argument
 */
 
-static void			d_arg_add_sign(char **fill, char **str, t_arg_info *arg_info)
+static char			*d_arg_get_sign(t_arg_info *arg_info)
 {
-	if (arg_info->pad_zeros == 1 && arg_info->rev_padding != 1 &&
-	arg_info->precision <= 0)
-	{
-		if (arg_info->neg_flag == 1)
-			*fill = ft_strjoin_free_s2("-", *fill);
-		else if (arg_info->pos_flag == 1)
-			*fill = ft_strjoin_free_s2("+", *fill);
-	}
-	else if (arg_info->rev_padding == 1)
-	{
-		if (arg_info->neg_flag == 1)
-			*str = ft_strjoin_free_s2("-", *str);
-		else if (arg_info->pos_flag == 1)
-			*str = ft_strjoin_free_s2("+", *str);
-	}
-	else
-	{
-		if (arg_info->neg_flag == 1)
-			*fill = ft_strjoin_free_s1(*fill, "-");
-		else if (arg_info->pos_flag == 1)
-			*fill = ft_strjoin_free_s1(*fill, "+");
-	}
-	// ft_putstr("d_arg.c d_arg_add_sign() *fill: -->");
-	// ft_putstr(*fill);
-	// ft_putstr("<--\n");
+	char			*sign;
+
+	sign = NULL;
+	if (arg_info->padding->neg == 1)
+		sign = ft_strdup("-");
+	else if (arg_info->padding->pos == 1)
+		sign = ft_strdup("+");
+	if (arg_info->padding->neg == 1 || arg_info->padding->pos == 1)
+		arg_info->padding->total -= 1;
+	return (sign);
 }
 
-int					d_arg_parse(char *str, t_arg_info *arg_info, int i)
-{
-	check_pos_flag(str, arg_info, i);
-	i = check_only_spaces(str, arg_info, i);
-	while (str[i] == '+' || str[i] == ' ')
-		i++;
-	i = get_mods(str, arg_info, i);
-	while (str[i] == '+' || str[i] == ' ')
-		i++;
-	i = get_flags(str, arg_info, i);
-	while (str[i] == '+' || str[i] == ' ')
-		i++;
-	i = get_padding(str, arg_info, i);
-	while (str[i] == '+' || str[i] == ' ')
-		i++;
-	i = get_precision(str, arg_info, i);
-	while (specifier_check(str[i]) != 1)
-		i++;
-	i++;
-	return (i);
-}
-
-static char			*d_arg_get_padding(char *str, t_arg_info *arg_info)
+static char			*d_arg_get_fill(char *str, t_arg_info *arg_info)
 {
 	char			*fill;
-	int				padding;
-	int				len;
+	int				usable_padding;
 
 	fill = NULL;
-	padding = arg_info->padding;
-	len = padding - ft_strlen(str);
-	if (arg_info->neg_flag == 1 || arg_info->pos_flag == 1)
-		len--;
-	if (arg_info->count_spaces > 0)
-		len = arg_info->count_spaces;
-	if (len > 0)
+	if ((fill = get_spaces(arg_info)) != NULL)
+		return (fill);
+	usable_padding = ft_strlen(str);
+	if (arg_info->precision->total > usable_padding)
+		usable_padding = arg_info->precision->total;
+	if (arg_info->padding->zero == 1 && arg_info->padding->rev == 1)
+		arg_info->padding->zero = 0;
+	if (arg_info->padding->total > 0)
 	{
-		if (!(fill = ft_strnew(len)))
-			return (NULL);
-		if (arg_info->pad_zeros == 1 && arg_info->rev_padding != 1 &&
-		arg_info->precision < 0)
-			ft_memset(fill, '0', len);
+		fill = ft_strnew(arg_info->padding->total);
+		if (arg_info->padding->zero == 1 && arg_info->precision->total <= 0)
+			ft_memset(fill, '0', arg_info->padding->total - usable_padding);
 		else
-			ft_memset(fill, ' ', len);
+			ft_memset(fill, ' ', arg_info->padding->total - usable_padding);
 	}
-	else
-		fill = ft_strnew(0);
 	return (fill);
 }
 
-static void			d_arg_add_padding(char **str, t_arg_info *arg_info)
+static char			*d_arg_get_precision(char *str, t_arg_info *arg_info)
 {
-	char			*fill;
-	int				padding;
-	int				arg_len;
+	char			*precision;
+	int				usable_precision;
 
-	// ft_putstr("d_arg_add_padding() arg_info->count_spaces: ");
-	// ft_putnbr(arg_info->count_spaces);
-	// ft_putchar('\n');
-	fill = NULL;
-	padding = arg_info->padding - arg_info->pos_flag;
-	arg_len = ft_strlen(*str);
-	// ft_putstr("d_arg.c d_arg_add_padding() *str: -->");
-	// ft_putstr(*str);
-	// ft_putstr("<--\n");
-	// ft_putstr("arg_len: ");
-	// ft_putnbr(arg_len);
-	// ft_putchar('\n');
-	if ((padding > 0 && arg_len < padding) ||
-	(arg_info->count_spaces > 0 && arg_info->neg_flag != 1))
-			fill = d_arg_get_padding(*str, arg_info);
-	else
-		fill = ft_strnew(0);
-	d_arg_add_sign(&fill, str, arg_info);
-	if (arg_info->rev_padding != 1)
-		*str = ft_strjoin_free(fill, *str);
-	else if (arg_info->rev_padding == 1)
-		*str = ft_strjoin_free(*str, fill);
+	precision = NULL;
+	usable_precision = arg_info->precision->total - ft_strlen(str);
+	if (usable_precision > 0)
+	{
+		if (arg_info->padding->rev != 1)
+			if (usable_precision >= arg_info->padding->total)
+				arg_info->padding->total = 0;
+		precision = ft_strnew(usable_precision);
+		ft_memset(precision, '0', usable_precision);
+	}
+	return (precision);
 }
 
-/*
-**	flags for %d: h, hh, l, ll, j, z
-*/
+static void			append_sign(char **sign, char **fill, char **precision, char **str)
+{
+	if (*fill != NULL && *fill[0] == '0' && *sign != NULL)
+		*fill = ft_strjoin(*sign, *fill);
+	else if (*precision != NULL && *sign != NULL)
+		*precision = ft_strjoin_free(*sign, *precision);
+	else if (*precision == NULL && *sign != NULL)
+		*str = ft_strjoin_free(*sign, *str);
+	else if (*fill == NULL && *precision == NULL && *sign != NULL)
+		*str = ft_strjoin_free(*sign, *str);
+}
 
-char				*d_arg(va_list arg, t_arg_info *arg_info)
+static void			append_precision(char **str, char **precision)
+{
+	if (*precision != NULL)
+		*str = ft_strjoin_free(*precision, *str);
+}
+
+static void			append_fill(char **str, char **fill, t_arg_info *arg_info)
+{
+	if (*fill != NULL)
+	{
+		if (arg_info->padding->rev == 1)
+			*str = ft_strjoin_free(*str, *fill);
+		else
+			*str = ft_strjoin_free(*fill, *str);
+	}
+}
+
+static void			d_arg_combine_all(char **str, t_arg_info *arg_info)
+{
+	char			*sign;
+	char			*precision;
+	char			*fill;
+
+	sign = d_arg_get_sign(arg_info);
+	precision = d_arg_get_precision(*str, arg_info);
+	fill = d_arg_get_fill(*str, arg_info);
+	// printf("\nstr: %s\nsign: %s\nprecision: ->%s<-\nfill: ->%s<-\n\n", *str, sign, precision, fill);
+	append_sign(&sign, &fill, &precision, str);
+	append_precision(str, &precision);
+	append_fill(str, &fill, arg_info);
+	// printf("\nstr: %s\nsign: %s\nprecision: ->%s<-\nfill: ->%s<-\n\n", *str, sign, precision, fill);
+}
+
+char				*handle_short(va_list arg)
+{
+	char			*ret;
+	int				i;
+
+	ret = NULL;
+	i = (short)va_arg(arg, int);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_char(va_list arg)
+{
+	char			*ret;
+	int				i;
+
+	ret = NULL;
+	i = (char)va_arg(arg, int);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_int(va_list arg)
+{
+	char			*ret;
+	int				i;
+
+	ret = NULL;
+	i = va_arg(arg, int);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_long(va_list arg)
+{
+	char			*ret;
+	long			i;
+
+	ret = NULL;
+	i = va_arg(arg, long);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_long_long(va_list arg)
+{
+	char			*ret;
+	long long		i;
+
+	ret = NULL;
+	i = va_arg(arg, long long);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_ssizet(va_list arg)
+{
+	char			*ret;
+	ssize_t			i;
+
+	ret = NULL;
+	i = va_arg(arg, ssize_t);
+	if (i == -1)
+		ret = ft_strdup("-1");
+	else
+		ret = ft_llutoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_intmax(va_list arg)
 {
 	char			*ret;
 	intmax_t		i;
 
+	ret = NULL;
 	i = va_arg(arg, intmax_t);
-	if (arg_info->flag == 'h')
-		i = (short)i;
-	else if (arg_info->flag == ('h' + 'h'))
-		i = (char)i;
-	else if (arg_info->flag == 'l')
-		i = (long)i;
-	else if (arg_info->flag == ('l' + 'l'))
-		i = (long long)i;
-	else if (arg_info->flag == 'z')
-		i = (size_t)i;
-	else
-		i = (int)i;
-	if (i == 0 && arg_info->precision == 0)
-		ret = ft_strnew(0);
-	else if (arg_info->flag == 'z')
-		ret = ft_llutoa_base(i, 10, 0);
-	else
-		ret = ft_lltoa_base(ft_abs(i), 10, 0);
-	handle_precision(&ret, arg_info);
-	if (i < 0 && ret[0] != '-')
-		arg_info->neg_flag = 1;
-	d_arg_add_padding(&ret, arg_info);
+	ret = ft_lltoa_base(i, 10, 0);
 	return (ret);
 }
+
+char				*d_arg(va_list arg, t_arg_info *arg_info)
+{
+	char			*ret;
+	char			*temp;
+
+	if (arg_info->flag == 'h')
+		ret = handle_short(arg);
+	else if (arg_info->flag == ('h' + 'h'))
+		ret = handle_char(arg);
+	else if (arg_info->flag == 'l')
+		ret = handle_long(arg);
+	else if (arg_info->flag == ('l' + 'l'))
+		ret = handle_long_long(arg);
+	else if (arg_info->flag == 'z')
+		ret = handle_ssizet(arg);
+	else if (arg_info->flag == 'j')
+		ret = handle_intmax(arg);
+	else
+		ret = handle_int(arg);
+	if (ft_strcmp(ret, "0") == 0 && arg_info->precision->total == 0)
+	{
+		free(ret);
+		ret = ft_strnew(0);
+	}
+	if (ret[0] == '-')
+	{
+		arg_info->padding->neg = 1;
+		temp = ft_strdup(ret + 1);
+		free(ret);
+		ret = temp;
+	}
+	d_arg_combine_all(&ret, arg_info);
+	return (ret);
+}
+
+/*
+**	Should make arg_d_handle_padding() and use combine_fill_and_prefix() manually here.
+**	%d is a bitch to deal with
+*/

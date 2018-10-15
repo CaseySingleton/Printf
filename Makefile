@@ -18,7 +18,7 @@ FLAGS			= $(CFLAGS)
 
 FILES			= ft_printf.c argument_parsing.c padding.c \
 				  struct_functions.c argument_handling.c error_handling.c \
-				  d_arg.c x_arg.c utils.c
+				  d_arg.c x_arg.c utils.c precision.c
 
 SRC				= $(addprefix srcs/, $(FILES))
 OBJ				= $(addprefix build/, $(FILES:.c=.o))

@@ -23,10 +23,10 @@
 
 void			x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info)
 {
-	if (arg_info->rev_padding == 0 && arg_info->specifier_mod == '#'
+	if (arg_info->padding->rev == 0 && arg_info->padding->prefix == '#'
 	&& ft_strcmp(*str, "0") != 0)
 	{
-		if (arg_info->pad_zeros == 1 && arg_info->neg_flag == 0)
+		if (arg_info->padding->zero == 1 && arg_info->padding->neg == 0)
 		{
 			if (arg_info->specifier == 'x')
 				*fill = ft_strjoin_free_s2("0x", *fill);
@@ -41,7 +41,7 @@ void			x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info)
 				*fill = ft_strjoin_free_s1(*fill, "0X");
 		}
 	}
-	else if (arg_info->specifier_mod == '#' && ft_strcmp(*str, "0") != 0)
+	else if (arg_info->padding->prefix == '#' && ft_strcmp(*str, "0") != 0)
 	{
 		if (arg_info->specifier == 'x')
 			*str = ft_strjoin_free_s2("0x", *str);
@@ -55,12 +55,12 @@ static char		*x_arg_get_padding(char *str, t_arg_info *arg_info)
 	char		*fill;
 	int			len;
 
-	len = arg_info->padding - ft_strlen(str);
-	if (arg_info->specifier_mod == '#')
+	len = arg_info->padding->total - ft_strlen(str);
+	if (arg_info->padding->prefix == '#')
 		len -= 2;
 	if (len <= 0 || (!(fill = ft_strnew(len))))
 			return (NULL);
-	if (arg_info->pad_zeros == 1 && arg_info->rev_padding != 1)
+	if (arg_info->padding->zero == 1 && arg_info->padding->rev != 1)
 		ft_memset(fill, '0', len);
 	else
 		ft_memset(fill, ' ', len);
@@ -74,9 +74,9 @@ static void		x_arg_add_padding(char **str, t_arg_info *arg_info)
 	fill = x_arg_get_padding(*str, arg_info);
 	if (fill == NULL)
 		fill = ft_strnew(0);
-	if (arg_info->precision != 0)
+	if (arg_info->precision->total != 0)
 		x_arg_add_0x(&fill, str, arg_info);
-	if (arg_info->rev_padding != 1)
+	if (arg_info->padding->rev != 1)
 		*str = ft_strjoin_free(fill, *str);
 	else
 		*str = ft_strjoin_free(*str, fill);
@@ -88,19 +88,26 @@ static void		x_arg_add_padding(char **str, t_arg_info *arg_info)
 
 char			*x_arg(va_list arg, t_arg_info *arg_info)
 {
-	// print_arg_info(arg_info);
 	char 		*ret;
+	uintmax_t	i;
+
+	i = va_arg(arg, uintmax_t);
 	if (arg_info->precision == 0)
 		ret = ft_strnew(0);
 	else if (arg_info->flag == 'l' || arg_info->flag == 'j')
-		ret = ft_llutoa_base(va_arg(arg, unsigned long), 16,
-		(arg_info->specifier == 'X' ? 1 : 0));
+		i = (unsigned long)i;
 	else if (arg_info->flag == ('l' + 'l'))
-		ret = ft_llutoa_base(va_arg(arg, unsigned long long), 16,
-		(arg_info->specifier == 'X' ? 1 : 0));
+		i = (unsigned long long)i;
 	else
-		ret = ft_llutoa_base(va_arg(arg, unsigned int), 16,
-		(arg_info->specifier == 'X' ? 1 : 0));
-	x_arg_add_padding(&ret, arg_info);
+		i = (unsigned int)i;
+	if (arg_info->precision->total != 0)
+		ret = ft_llutoa_base(i, 16, (arg_info->specifier == 'X' ? 1 : 0));
+	else
+	{
+		ret = ft_strnew(0);
+		arg_info->padding->prefix = 0;
+	}
+	handle_precision(&ret, arg_info);
+	handle_padding(&ret, arg_info);
 	return (ret);
 }

@@ -39,52 +39,80 @@
 **	But that seems slow seeing as I would have to iterate a second time
 */
 
-int				get_mods(char *str, t_arg_info *arg_info, int i)
+/*
+	i = get_mods(str, arg_info, i);
+	i = get_flags(str, arg_info, i);
+	i = get_padding(str, arg_info, i);
+	i = get_precision(str, arg_info, i);
+*/
+
+int				get_info(char *str, t_arg_info *arg_info)
 {
-	if (str[i] == '#')
-		arg_info->specifier_mod = str[i++];
-	if (str[i] == '-')
+	int			i;
+
+	i = 1;
+	while (specifier_check(str[i]) != 1 && str[i] != '\0')
 	{
-		arg_info->rev_padding = 1;
-		i++;
+		if (str[i] == '#')
+			arg_info->padding->prefix = 1;
+		if (flag_check(str[i]) == 1)
+			i = get_flags(str, arg_info, i);
+		if (ft_isdigit(str[i]) == 1)
+			i = get_padding(str, arg_info, i);
+		if (str[i] == '.')
+			i = get_precision(str, arg_info, i);
+		if (str[i] == ' ')
+			arg_info->padding->spaces += 1;
+		if (str[i] == '+')
+			arg_info->padding->pos = 1;
+		if (str[i] == '-')
+			arg_info->padding->rev = 1;
+		if (specifier_check(str[i]) != 1)
+			i++;
 	}
-	if (str[i] == '#')
-		arg_info->specifier_mod = str[i++];
-	if (str[i] == '0')
-	{
-		arg_info->pad_zeros = 1;
-		i++;
-	}
+	if (str[i] != '\0')
+		arg_info->specifier = str[i++];
+	if (arg_info->padding->spaces != i - 2 || (arg_info->specifier != 'd' && arg_info->specifier != 'D'))
+		arg_info->padding->spaces = 0;
+	arg_info->hash_key = arg_info->specifier % NUM_SPECIFIERS;
+	// print_arg_info(arg_info);
 	return (i);
+}
+
+int				flag_check(char c)
+{
+	if (c == 'h' || c == 'l' || c == 'j' || c == 'z')
+		return (1);
+	return (0);
 }
 
 int				get_flags(char *str, t_arg_info *arg_info, int i)
 {
-	if (str[i] != 'h' && str[i] != 'l' && str[i] != 'j' && str[i] != 'z')
-		arg_info->flag = -1;
-	else if (str[i] == str[i + 1])
+	if (str[i] == str[i + 1])
 	{
 		arg_info->flag = (str[i] + str[i]);
-		i += 2;
+		return (i + 2);
 	}
-	else
-		arg_info->flag = str[i];
-	return (i);
+	arg_info->flag = str[i];
+	return (i + 1);
 }
 
 int				get_padding(char *str, t_arg_info *arg_info, int i)
 {
-	if (!ft_isdigit(str[i]))
+	if (str[i] == '0')
 	{
-		arg_info->padding = 0;
-		return (i);
-	}
-	if (str[i] == '0' || (str[i] == '0' && !ft_isdigit(str[i + 1])))
-		arg_info->pad_zeros = 1;
-	arg_info->padding = ft_atoi(str + i);
-	if (arg_info->padding < 0)
+		arg_info->padding->zero = 1;
 		i++;
-	return (i += ft_numlen(ft_abs(arg_info->padding)));
+	}
+	if (ft_isdigit(str[i]) == 1)
+	{
+		arg_info->padding->total = ft_atoi(str + i);
+		if (arg_info->padding->total < 0)
+			i++;
+		return (i += ft_numlen(ft_abs(arg_info->padding->total)));
+	}
+	else
+		return (i);
 }
 
 /*
@@ -94,32 +122,28 @@ int				get_padding(char *str, t_arg_info *arg_info, int i)
 
 int				get_precision(char *str, t_arg_info *arg_info, int i)
 {
-	if (str[i] != '.')
-		return (i);
-	i++;
 	if (str[i] == '+')
 		i++;
-	if (ft_isdigit(str[i]))
+	if (ft_isdigit(str[i + 1]) != 1)
 	{
-		arg_info->precision = ft_atoi(str + i);
-		if (arg_info->precision < 0)
-		{
-			ft_putstr("Precision can not be negative\n");
-			exit(-1);
-		}
+		arg_info->precision->total = 0;
+		return (i);
 	}
-	else
-		arg_info->precision = 0;
-	if (arg_info->precision > 0)
-		return (i += ft_numlen(arg_info->precision));
-	return (i);
+	i++;
+	arg_info->precision->total = ft_atoi(str + i);
+	if (arg_info->precision->total < 0)
+	{
+		ft_putstr("Precision can not be negative\n");
+		exit(-1);
+	}
+	return (i += ft_numlen(arg_info->precision->total));
 }
 
 /*
 **	printf format: %[char flags][num width][num .precision][num length] char specifier
 **	Specifiers: sSpdDioOuUxXcC
 */
-
+/*
 void			other_get_specifier(char *str, t_arg_info *arg_info, int i)
 {
 	while (specifier_check(str[i]) != 1 && str[i] != '\0')
@@ -142,3 +166,4 @@ int				get_specifier(char *str, t_arg_info *arg_info, int i)
 	}
 	return (i + 1);
 }
+*/

@@ -44,19 +44,20 @@ typedef struct		s_print
 int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_arg_info *arg_info))
 {
 	int				i;
+	char			*append;
 	t_arg_info		*arg_info;
 
-	arg_info = arg_info_init();
-	i = get_arg_info(master, arg_info);
+	arg_info_init(&arg_info);
+	i = get_info(master, arg_info);
 	if (arg_info->specifier == 'o')
-		arg_info->arg = f[6](ap, arg_info);
+		append = f[6](ap, arg_info);
 	else if (arg_info->specifier == 'C')
-		arg_info->arg = f['c' % NUM_SPECIFIERS](ap, arg_info);
+		append = f['c' % NUM_SPECIFIERS](ap, arg_info);
 	else if (arg_info->specifier == '%')
-		arg_info->arg = percent_arg(ap, arg_info);
+		append = percent_arg(ap, arg_info);
 	else
-		arg_info->arg = f[arg_info->hash_key](ap, arg_info);
-	*str = ft_strjoin_free(*str, arg_info->arg);
+		append = f[arg_info->hash_key](ap, arg_info);
+	*str = ft_strjoin_free(*str, append);
 	free(arg_info);
 	return (i);
 }

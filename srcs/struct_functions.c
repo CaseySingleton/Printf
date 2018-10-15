@@ -12,76 +12,62 @@
 
 #include "ft_printf.h"
 
-t_arg_info			*arg_info_init(void)
+void				arg_info_init(t_arg_info **arg_info)
 {
-	t_arg_info		*new;
-
-	if (!(new = (t_arg_info *)malloc(sizeof(t_arg_info))))
-		return (NULL);
-	new->arg = NULL;
-	new->specifier = '\0';
-	new->specifier_mod = '\0';
-	new->flag = -1;
-	new->width = 0;
-	new->precision = -1;
-	new->padding = 0;
-	new->rev_padding = 0;
-	new->pad_zeros = 0;
-	new->neg_flag = 0;
-	new->pos_flag = 0;
-	new->count_spaces = 0;
-	return (new);
+	if (!((*arg_info) = (t_arg_info *)malloc(sizeof(t_arg_info))))
+		return ;
+	if (!((*arg_info)->padding = (t_padding *)malloc(sizeof(t_padding))))
+		return ;
+	if (!((*arg_info)->precision = (t_precision *)malloc(sizeof(t_precision))))
+		return ;
+	(*arg_info)->hash_key = -1;
+	(*arg_info)->specifier = 0;
+	(*arg_info)->flag = 0;
+	(*arg_info)->padding->total = 0;
+	(*arg_info)->padding->prefix = 0;
+	(*arg_info)->padding->zero = 0;
+	(*arg_info)->padding->neg = 0;
+	(*arg_info)->padding->pos = 0;
+	(*arg_info)->padding->rev = 0;
+	(*arg_info)->padding->spaces = 0;
+	(*arg_info)->precision->total = -1;
 }
 
 void				print_arg_info(t_arg_info *arg_info)
 {
-	ft_putstr("\narg_info->arg: ");
-	ft_putstr(arg_info->arg);
-	ft_putstr("\narg_info->specifier: ");
-	ft_putchar(arg_info->specifier);
-	ft_putstr("\narg_info->specifier_mod: ");
-	ft_putnbr(arg_info->specifier_mod);
-	ft_putstr("\narg_info->flag: ");
-	ft_putnbr(arg_info->flag);
-	ft_putstr("\narg_info->padding: ");
-	ft_putnbr(arg_info->padding);
-	ft_putstr("\narg_info->rev_padding: ");
-	ft_putnbr(arg_info->rev_padding);
-	ft_putstr("\narg_info->pad_zeros: ");
-	ft_putnbr(arg_info->pad_zeros);
-	ft_putstr("\narg_info->precision: ");
-	ft_putnbr(arg_info->precision);
-	ft_putstr("\narg_info->hash_key: ");
+	ft_putstr("****************************");
+	ft_putstr(BOLD);
+	ft_putstr("\narg_info:\033[0m");
+	ft_putstr(RESET);
+	ft_putstr("\n   hash_key: ");
 	ft_putnbr(arg_info->hash_key);
-	ft_putstr("\narg_info->neg_flag: ");
-	ft_putnbr(arg_info->neg_flag);
-	ft_putstr("\narg_info->pos_flag: ");
-	ft_putnbr(arg_info->pos_flag);
-	ft_putstr("\narg_info->count_spaces: ");
-	ft_putnbr(arg_info->count_spaces);
-	ft_putstr("\n");
-}
+	ft_putstr("\n  specifier: ");
+	ft_putchar(arg_info->specifier);
+	ft_putstr("\n       flag: ");
+	ft_putnbr(arg_info->flag);
 
-/*
-**	printf format: %[char flags][num width][num .precision][num length] char specifier
-*/
+	ft_putstr(BOLD);
+	ft_putstr("\narg_info->padding:");
+	ft_putstr(RESET);
+	ft_putstr("\n      total: ");
+	ft_putnbr(arg_info->padding->total);
+	ft_putstr("\n     prefix: ");
+	ft_putnbr(arg_info->padding->prefix);
+	ft_putstr("\n       zero: ");
+	ft_putnbr(arg_info->padding->zero);
+	ft_putstr("\n        neg: ");
+	ft_putnbr(arg_info->padding->neg);
+	ft_putstr("\n        pos: ");
+	ft_putnbr(arg_info->padding->pos);
+	ft_putstr("\n        rev: ");
+	ft_putnbr(arg_info->padding->rev);
+	ft_putstr("\n     spaces: ");
+	ft_putnbr(arg_info->padding->spaces);
 
-#include <stdio.h>
-
-int					get_arg_info(char *str, t_arg_info *arg_info)
-{
-	int				i;
-
-	i = 1;
-	other_get_specifier(str, arg_info, i);
-	if (arg_info->specifier == 'd')
-		return (d_arg_parse(str, arg_info, i));
-	i = get_mods(str, arg_info, i);
-	i = get_flags(str, arg_info, i);
-	i = get_padding(str, arg_info, i);
-	i = get_precision(str, arg_info, i);
-	while (specifier_check(str[i]) != 1)
-		i++;
-	i++;
-	return (i);
+	ft_putstr(BOLD);
+	ft_putstr("\narg_info->precision:");
+	ft_putstr(RESET);
+	ft_putstr("\n      total: ");
+	ft_putnbr(arg_info->precision->total);
+	ft_putstr("\n****************************\n");
 }

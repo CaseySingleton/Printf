@@ -31,48 +31,128 @@
 **	if pad_zeros == 0 add 0x to start of arg_info->arg
 */
 
-void			add_spaces(char **str, t_arg_info *arg_info)
+static char		*get_prefix(char *str, t_arg_info *arg_info)
+{
+	char		*ret;
+
+	ret = NULL;
+	if (arg_info->padding->prefix == 1 && str[0] != '0')
+	{
+		if (arg_info->specifier == 'x')
+		{
+			ret = ft_strdup("0x");
+			arg_info->padding->total -= 2;
+		}
+		else if (arg_info->specifier == 'X')
+		{
+			ret = ft_strdup("0X");
+			arg_info->padding->total -= 2;
+		}
+		else if (arg_info->specifier == 'o')
+		{
+			ret = ft_strdup("0");
+			arg_info->padding->total -= 1;
+		}
+	}
+	return (ret);
+}
+
+char			*get_spaces(t_arg_info *arg_info)
 {
 	char		*spaces;
 
-	if (arg_info->count_spaces != 0)
+	spaces = NULL;
+	if (arg_info->padding->spaces != 0 && arg_info->padding->neg != 1)
 	{
-		if (!(spaces = ft_strnew(arg_info->count_spaces)))
-			return ;
-		ft_memset(spaces, ' ', arg_info->count_spaces);
-		*str = ft_strjoin_free_s2(spaces, *str);
+		if (!(spaces = ft_strnew(arg_info->padding->spaces)))
+			return (NULL);
+		ft_memset(spaces, ' ', arg_info->padding->spaces);
 	}
+	return (spaces);
 }
 
  /*
  **	add padding should decide to add to the front or end of a string
  */
 
-char			*add_padding(char *str, t_arg_info *arg_info)
+char			*padding(char *str, t_arg_info *arg_info)
 {
 	char		*fill;
-	int			padding;
-	int			arg_len;
+	int			len;
 
-	padding = arg_info->padding;
-	arg_len = ft_strlen(str);
-	if (padding <= 0 || arg_len >= padding ||
-	(!(fill = ft_strnew(padding - arg_len))))
+	fill = NULL;
+	if (arg_info->padding->spaces != 0 && arg_info->padding->neg != 1)
+		return (get_spaces(arg_info));
+	len = arg_info->padding->total - ft_strlen(str);
+	if (len <= 0 || (!(fill = ft_strnew(len))))
 		return (NULL);
-	if (arg_info->pad_zeros == 1 && arg_info->rev_padding != 1)
-		ft_memset(fill, '0', padding - arg_len);
+	if ((arg_info->specifier == 'x' || arg_info->specifier == 'X' ||
+	arg_info->specifier == 'o') && arg_info->padding->rev == 1 &&
+	arg_info->padding->zero == 1)
+		ft_memset(fill, ' ', len);
+	else if (arg_info->padding->zero == 1)
+		ft_memset(fill, '0', len);
 	else
-		ft_memset(fill, ' ', padding - arg_len);
+		ft_memset(fill, ' ', len);
 	return (fill);
+}
+
+static char		*combine_padding_and_prefix(char **str, char *fill, char *prefix, t_arg_info *arg_info)
+{
+	char		*ret;
+
+	ret = NULL;
+	if (fill == NULL && prefix != NULL)
+		ret = ft_strjoin_free(prefix, *str);
+	else if (fill != NULL && prefix == NULL)
+	{
+		if (arg_info->padding->rev == 1 && arg_info->padding->zero != 1)
+			ret = ft_strjoin(*str, fill);
+		else if (arg_info->padding->rev == 1 && arg_info->padding->zero == 1
+		&& fill[0] == ' ')
+			ret = ft_strjoin(*str, fill);
+		else if (arg_info->padding->rev != 1)
+			ret = ft_strjoin(fill, *str);
+	}
+	else if (fill != NULL && prefix != NULL)
+	{
+		if (arg_info->padding->zero == 1 && arg_info->padding->rev == 1 && fill[0] == ' ')
+		{
+			ret = ft_strjoin_free(prefix, *str);
+			ret = ft_strjoin_free(ret, fill);
+		}
+		else if (arg_info->padding->zero == 1)
+		{
+			ret = ft_strjoin_free(prefix, fill);
+			ret = ft_strjoin_free(ret, *str);
+		}
+		else if (arg_info->padding->zero != 1 && arg_info->padding->rev == 1)
+		{
+			ret = ft_strjoin_free(prefix, *str);
+			ret = ft_strjoin_free(ret, fill);
+		}
+		else if (arg_info->padding->zero != 1)
+		{
+			ret = ft_strjoin_free(prefix, *str);
+			ret = ft_strjoin_free(fill, ret);
+		}
+	}
+	else
+	{
+		ret = ft_strdup(*str);
+		free(*str);
+	}
+	return (ret);
 }
 
 void			handle_padding(char **str, t_arg_info *arg_info)
 {
+	char		*prefix;
 	char		*fill;
 
-	fill = add_padding(*str, arg_info);
-	if (fill != NULL && arg_info->rev_padding == 0)
-		*str = ft_strjoin_free(fill, *str);
-	else if (fill != NULL && arg_info->rev_padding == 1)
-		*str = ft_strjoin_free(*str, fill);
+	prefix = NULL;
+	fill = NULL;
+	prefix = get_prefix(*str, arg_info);
+	fill = padding(*str, arg_info);
+	*str = combine_padding_and_prefix(str, fill, prefix, arg_info);
 }
