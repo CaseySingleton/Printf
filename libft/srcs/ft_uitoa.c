@@ -19,8 +19,6 @@ char			*ft_uitoa_base(int n, int base, int upper)
 
 	if (base < 2 || base > 16)
 		return (NULL);
-	// if (base == 10)
-	// 	return (ft_uitoa((int)n));
 	num_len = ft_numlen(n) + ((n < 0) ? 1 : 0);
 	ret = ft_strnew(num_len);
 	while (--num_len >= ((n < 0) ? 1 : 0))

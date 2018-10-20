@@ -12,12 +12,6 @@
 
 #include "libft.h"
 
-#include <stdio.h> /* <------ DON'T FORGET TO REMOVE THIS */
-
-/*
-**	WORK IN PROGRESS
-*/
-
 char			*ft_itoa_base(int n, int base, int upper)
 {
 	char	*ret;
@@ -36,7 +30,7 @@ char			*ft_itoa_base(int n, int base, int upper)
 		else
 			ret[num_len] = (n % base) + '0';
 		n /= base;
-	num_len--;		
+		num_len--;
 	}
 	return (ret);
 }

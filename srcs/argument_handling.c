@@ -66,6 +66,7 @@ char					*p_arg(va_list arg, t_arg_info *arg_info)
 
 	n = (unsigned long)va_arg(arg, char *);
 	ret = ft_llutoa_base(n, 16, 0);
+	ret = ft_strjoin_free("0x", ret);
 	handle_padding(&ret, arg_info);
 	return (ret);
 }

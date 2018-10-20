@@ -36,4 +36,3 @@ char		*ft_lltoa_base(intmax_t n, int base, int upper)
 	}
 	return (ret);
 }
-

@@ -13,7 +13,7 @@
 NAME			= libftprintf.a
 
 CC				= gcc
-CFLAGS			= -Wall -Werror -Wextra -g
+CFLAGS			= -Wall -Werror -Wextra -O3
 FLAGS			= $(CFLAGS)
 
 FILES			= ft_printf.c \
@@ -37,7 +37,7 @@ ft:
 	@make re
 
 test: $(NAME)
-	@$(CC) main.c $(NAME) -o printf
+	@$(CC) $(CFLAGS) main.c $(NAME) -o printf
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: libft.a"
