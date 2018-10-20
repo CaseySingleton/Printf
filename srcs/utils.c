@@ -12,6 +12,13 @@
 
 #include "ft_printf.h"
 
+int				flag_check(char c)
+{
+	if (c == 'h' || c == 'l' || c == 'j' || c == 'z')
+		return (1);
+	return (0);
+}
+
 int				specifier_check(char c)
 {
 	if (c == 's' || c == 'S' || c == 'p' || c == 'd' || c == 'D' || c == 'i'
@@ -20,10 +27,3 @@ int				specifier_check(char c)
 		return (1);
 	return (0);
 }
-
-/*
-char			*check_max_values()
-{
-
-}
-*/

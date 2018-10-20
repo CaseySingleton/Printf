@@ -19,8 +19,6 @@
 **	this function appends the argument to the end of string
 */
 
-// s(x) S(x) p() d(x) D(?) i(x) o(x) O(?) u() U() x() X() c() C()
-
 char					*s_arg(va_list arg, t_arg_info *arg_info)
 {
 	char				*temp;
@@ -41,31 +39,11 @@ char					*s_arg(va_list arg, t_arg_info *arg_info)
 **	I think u_arg() works about the same as x_arg()
 */
 
-char					*u_arg(va_list arg, t_arg_info *arg_info)
-{
-	char 				*ret;
-	uintmax_t			i;
-	if (arg_info->flag == 'h')
-		i = (unsigned short)va_arg(arg, unsigned int);
-	else if (arg_info->flag == 'l')
-		i = (unsigned long)va_arg(arg, unsigned long);
-	else if (arg_info->flag == ('l' + 'l'))
-		i = (unsigned long long)va_arg(arg, unsigned long long);
-	else if (arg_info->flag == 'j')
-		i = va_arg(arg, uintmax_t);
-	else
-		i = (unsigned int)va_arg(arg, unsigned long long);
-	ret = ft_llutoa_base(i, 10, (arg_info->specifier == 'U' ? 1 : 0));
-	handle_precision(&ret, arg_info);
-	handle_padding(&ret, arg_info);
-	return (ret);
-}
-
 char					*o_arg(va_list arg, t_arg_info *arg_info)
 {
 	char				*ret;
 	long long			i;
-	
+
 	i = va_arg(arg, long long);
 	if (arg_info->precision->total == 0)
 	{

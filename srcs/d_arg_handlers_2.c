@@ -1,25 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_handling.c                                   :+:      :+:    :+:   */
+/*   d_arg_handlers_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/27 19:48:18 by csinglet          #+#    #+#             */
-/*   Updated: 2018/09/27 19:48:19 by csinglet         ###   ########.fr       */
+/*   Created: 2018/10/19 19:13:02 by csinglet          #+#    #+#             */
+/*   Updated: 2018/10/19 19:13:03 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
-/*
-**
-*/
-
-int			type_check(char specifier, va_list arg)
+char				*handle_ssizet(va_list arg)
 {
-	//	check the type of arg agains the type specified by specifier
-	//	  if the types do not match return 0
-	//	  else return 1
-	return (0);
+	char			*ret;
+	ssize_t			i;
+
+	ret = NULL;
+	i = va_arg(arg, ssize_t);
+	if (i == -1)
+		ret = ft_strdup("-1");
+	else
+		ret = ft_llutoa_base(i, 10, 0);
+	return (ret);
+}
+
+char				*handle_intmax(va_list arg)
+{
+	char			*ret;
+	intmax_t		i;
+
+	ret = NULL;
+	i = va_arg(arg, intmax_t);
+	ret = ft_lltoa_base(i, 10, 0);
+	return (ret);
 }

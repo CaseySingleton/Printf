@@ -12,10 +12,8 @@
 
 #include "ft_printf.h"
 
-// flags: hh, h, l, ll, j, z
-
 /*
-**	# can be before or after -
+**	'#' can be before or after '-'
 **
 **	if there are spaces between % and d and there is nothing but spaces
 **	between the two, those spaces are added to the front of the d arg
@@ -39,14 +37,7 @@
 **	But that seems slow seeing as I would have to iterate a second time
 */
 
-/*
-	i = get_mods(str, arg_info, i);
-	i = get_flags(str, arg_info, i);
-	i = get_padding(str, arg_info, i);
-	i = get_precision(str, arg_info, i);
-*/
-
-int				get_info(char *str, t_arg_info *arg_info)
+static int		pleasing_the_norm(char *str, t_arg_info *arg_info)
 {
 	int			i;
 
@@ -70,20 +61,21 @@ int				get_info(char *str, t_arg_info *arg_info)
 		if (specifier_check(str[i]) != 1)
 			i++;
 	}
-	if (str[i] != '\0')
-		arg_info->specifier = str[i++];
-	if (arg_info->padding->spaces != i - 2 || (arg_info->specifier != 'd' && arg_info->specifier != 'D'))
-		arg_info->padding->spaces = 0;
-	arg_info->hash_key = arg_info->specifier % NUM_SPECIFIERS;
-	// print_arg_info(arg_info);
 	return (i);
 }
 
-int				flag_check(char c)
+int				get_info(char *str, t_arg_info *arg_info)
 {
-	if (c == 'h' || c == 'l' || c == 'j' || c == 'z')
-		return (1);
-	return (0);
+	int			i;
+
+	i = pleasing_the_norm(str, arg_info);
+	if (str[i] != '\0')
+		arg_info->specifier = str[i++];
+	if (arg_info->padding->spaces != i - 2 || (arg_info->specifier != 'd' &&
+	arg_info->specifier != 'D'))
+		arg_info->padding->spaces = 0;
+	arg_info->hash_key = arg_info->specifier % NUM_SPECIFIERS;
+	return (i);
 }
 
 int				get_flags(char *str, t_arg_info *arg_info, int i)
@@ -140,30 +132,6 @@ int				get_precision(char *str, t_arg_info *arg_info, int i)
 }
 
 /*
-**	printf format: %[char flags][num width][num .precision][num length] char specifier
+**	%[char flags][num width][num .precision][num length] char specifier
 **	Specifiers: sSpdDioOuUxXcC
-*/
-/*
-void			other_get_specifier(char *str, t_arg_info *arg_info, int i)
-{
-	while (specifier_check(str[i]) != 1 && str[i] != '\0')
-		i++;
-	if (str[i] != '\0')
-	{
-		arg_info->specifier = str[i];
-		arg_info->hash_key = str[i] % NUM_SPECIFIERS;
-	}
-}
-
-int				get_specifier(char *str, t_arg_info *arg_info, int i)
-{
-	while (specifier_check(str[i]) != 1 && str[i] != '\0')
-		i++;
-	if (str[i] != '\0')
-	{
-		arg_info->specifier = str[i];
-		arg_info->hash_key = str[i] % NUM_SPECIFIERS;
-	}
-	return (i + 1);
-}
 */

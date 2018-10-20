@@ -33,19 +33,8 @@ void				arg_info_init(t_arg_info **arg_info)
 	(*arg_info)->precision->total = -1;
 }
 
-void				print_arg_info(t_arg_info *arg_info)
+static void			print_arg_info_padding(t_arg_info *arg_info)
 {
-	ft_putstr("****************************");
-	ft_putstr(BOLD);
-	ft_putstr("\narg_info:\033[0m");
-	ft_putstr(RESET);
-	ft_putstr("\n   hash_key: ");
-	ft_putnbr(arg_info->hash_key);
-	ft_putstr("\n  specifier: ");
-	ft_putchar(arg_info->specifier);
-	ft_putstr("\n       flag: ");
-	ft_putnbr(arg_info->flag);
-
 	ft_putstr(BOLD);
 	ft_putstr("\narg_info->padding:");
 	ft_putstr(RESET);
@@ -63,11 +52,30 @@ void				print_arg_info(t_arg_info *arg_info)
 	ft_putnbr(arg_info->padding->rev);
 	ft_putstr("\n     spaces: ");
 	ft_putnbr(arg_info->padding->spaces);
+}
 
+static void			print_arg_info_precision(t_arg_info *arg_info)
+{
 	ft_putstr(BOLD);
 	ft_putstr("\narg_info->precision:");
 	ft_putstr(RESET);
 	ft_putstr("\n      total: ");
 	ft_putnbr(arg_info->precision->total);
 	ft_putstr("\n****************************\n");
+}
+
+void				print_arg_info(t_arg_info *arg_info)
+{
+	ft_putstr("****************************");
+	ft_putstr(BOLD);
+	ft_putstr("\narg_info:\033[0m");
+	ft_putstr(RESET);
+	ft_putstr("\n   hash_key: ");
+	ft_putnbr(arg_info->hash_key);
+	ft_putstr("\n  specifier: ");
+	ft_putchar(arg_info->specifier);
+	ft_putstr("\n       flag: ");
+	ft_putnbr(arg_info->flag);
+	print_arg_info_padding(arg_info);
+	print_arg_info_precision(arg_info);
 }

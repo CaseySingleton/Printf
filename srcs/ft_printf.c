@@ -14,10 +14,10 @@
 
 #include <stdio.h>
 
-static int			count_args(char *str)
+static int		count_args(char *str)
 {
-	int				args;
-	int				i;
+	int			args;
+	int			i;
 
 	args = 0;
 	i = -1;
@@ -27,25 +27,12 @@ static int			count_args(char *str)
 	return (args);
 }
 
-/*
-typedef struct		s_print
+int				handle_arg(char *master, char **str, va_list ap,
+				char *(**f)(va_list, t_arg_info *arg_info))
 {
-	void			*arg;
-	int				specifier;
-	int				flag;
-	int				width;
-	int				precision;
-	int				length;
-}					t_print;
-*/
-
-
-
-int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_arg_info *arg_info))
-{
-	int				i;
-	char			*append;
-	t_arg_info		*arg_info;
+	int			i;
+	char		*append;
+	t_arg_info	*arg_info;
 
 	arg_info_init(&arg_info);
 	i = get_info(master, arg_info);
@@ -53,6 +40,8 @@ int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_
 		append = f[6](ap, arg_info);
 	else if (arg_info->specifier == 'C')
 		append = f['c' % NUM_SPECIFIERS](ap, arg_info);
+	else if (arg_info->specifier == 'U')
+		append = f['u' % NUM_SPECIFIERS](ap, arg_info);
 	else if (arg_info->specifier == '%')
 		append = percent_arg(ap, arg_info);
 	else
@@ -62,32 +51,27 @@ int					handle_arg(char *master, char **str, va_list ap, char *(**f)(va_list, t_
 	return (i);
 }
 
-// s  S  p  d  D  i  o  O  u  U  x  X  c  C  %
-
-// 10 8  7  10 8  0  6  4  12 10 0  13 9  7  7
-
-// 0 1(2) 2 3 4 5 # 7 8 9 # 11 13(2) No 10 or 6
-void				hash_init(char *(**f)(va_list, t_arg_info *))
+void			hash_init(char *(**f)(va_list, t_arg_info *))
 {
-	f[6] = &o_arg; // set equal to function that handles 'o' specifier
-	f[10] = NULL; // set equal to the function that handles 'c' specifier
-	f['s' % NUM_SPECIFIERS] = &s_arg; // 3
-	f['S' % NUM_SPECIFIERS] = &s_arg; // 13
-	f['c' % NUM_SPECIFIERS] = &c_arg; // 1
-	f['d' % NUM_SPECIFIERS] = &d_arg; // 2
-	f['D' % NUM_SPECIFIERS] = &d_arg; // 12
-	f['i' % NUM_SPECIFIERS] = &d_arg; // 7
-	f['p' % NUM_SPECIFIERS] = &p_arg; // 0
-	f['u' % NUM_SPECIFIERS] = &u_arg; // 5
-	f['x' % NUM_SPECIFIERS] = &x_arg; // 8
-	f['X' % NUM_SPECIFIERS] = &x_arg; // 4
+	f[6] = &o_arg;
+	f[10] = NULL;
+	f['s' % NUM_SPECIFIERS] = &s_arg;
+	f['S' % NUM_SPECIFIERS] = &s_arg;
+	f['c' % NUM_SPECIFIERS] = &c_arg;
+	f['d' % NUM_SPECIFIERS] = &d_arg;
+	f['D' % NUM_SPECIFIERS] = &d_arg;
+	f['i' % NUM_SPECIFIERS] = &d_arg;
+	f['p' % NUM_SPECIFIERS] = &p_arg;
+	f['u' % NUM_SPECIFIERS] = &u_arg;
+	f['x' % NUM_SPECIFIERS] = &x_arg;
+	f['X' % NUM_SPECIFIERS] = &x_arg;
 }
 
-void				handle_all_args(char *master, char **str, va_list ap)
+void			handle_all_args(char *master, char **str, va_list ap)
 {
-	char			*(*function_hash[NUM_SPECIFIERS])(va_list arg, t_arg_info *arg_info);
-	char			*temp;
-	int				i;
+	char		*temp;
+	int			i;
+	char		*(*function_hash[NUM_SPECIFIERS])(va_list, t_arg_info *);
 
 	hash_init(function_hash);
 	temp = NULL;
@@ -106,15 +90,15 @@ void				handle_all_args(char *master, char **str, va_list ap)
 }
 
 /*
-**	printf format: %[char flags][num width][num .precision][num length] char specifier
+**	%[char flags][num width][num .precision][num length] char specifier
 */
 
-int					ft_printf(const char *format, ...)
+int				ft_printf(const char *format, ...)
 {
-	va_list			ap;
-	char			*master;
-	char			*str;
-	int				ret;
+	va_list		ap;
+	char		*master;
+	char		*str;
+	int			ret;
 
 	va_start(ap, format);
 	master = ft_strdup(format);

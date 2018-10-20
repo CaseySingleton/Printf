@@ -20,35 +20,11 @@
 # include <stdint.h>
 # include "libft.h"
 
-// Specifiers: sSpdDioOuUxXcC
-
-# define FLAG_CHECK(c) (c == 'h' || c == 'l' || c == 'j' || c == 'z') ? 0 : 1
 # define NUM_SPECIFIERS 14
 # define NUM_FLAGS 6
 
 # define BOLD "\033[1m\033[30m"
 # define RESET "\033[0m"
-
-# define GET_TYPE(x) _Generic((x), \
-	_Bool: "_Bool", \
-	unsigned char: "unsigned char", \
-	char: "char", \
-	signed char: "signed char", \
-	short int: "short int", \
-	unsigned short int: "unsigned short int", \
-	int: "int", \
-	unsigned int: "unsigned int", \
-	long int: "long int", \
-	unsigned long int: "unsigned long int", \
-	long long int: "long long int", \
-	unsigned long long int: "unsigned long long int", \
-	float: "float", \
-	double: "double", \
-	long double: "long double", \
-	char *: "pointer to char", \
-	void *: "pointer to void", \
-	int *: "pointer to int", \
-	default: "other")
 
 typedef struct		s_padding
 {
@@ -88,12 +64,9 @@ void				print_arg_info(t_arg_info *arg_info);
 
 int					get_info(char *str, t_arg_info *arg_info);
 int					get_mods(char *str, t_arg_info *arg_info, int i);
-int					flag_check(char c);
 int					get_flags(char *str, t_arg_info *arg_info, int i);
 int					get_padding(char *str, t_arg_info *arg_info, int i);
 int					get_precision(char *str, t_arg_info *arg_info, int i);
-// void				other_get_specifier(char *str, t_arg_info *arg_info, int i);
-// int					get_specifier(char *str, t_arg_info *arg_info, int i);
 
 /*
 **	argument_handling.c
@@ -103,15 +76,45 @@ char				*s_arg(va_list arg, t_arg_info *arg_info);
 char				*c_arg(va_list arg, t_arg_info *arg_info);
 char				*p_arg(va_list arg, t_arg_info *arg_info);
 char				*o_arg(va_list arg, t_arg_info *arg_info);
-char				*u_arg(va_list arg, t_arg_info *arg_info);
 char				*percent_arg(va_list arg, t_arg_info *arg_info);
 char				*get_type(void *arg);
 
 /*
 **	d_arg.c
+**	d_arg_handlers_1.c
+**	d_arg_handlers_2.c
+**	d_arg_helpers.c
 */
 
 char				*d_arg(va_list arg, t_arg_info *arg_info);
+
+char				*handle_short(va_list arg);
+char				*handle_char(va_list arg);
+char				*handle_int(va_list arg);
+char				*handle_long(va_list arg);
+char				*handle_long_long(va_list arg);
+
+char				*handle_ssizet(va_list arg);
+char				*handle_intmax(va_list arg);
+
+char				*d_arg_get_sign(t_arg_info *arg_info);
+char				*d_arg_get_fill(char *str, t_arg_info *arg_info);
+char				*d_arg_get_precision(char *str, t_arg_info *arg_info);
+char				*d_arg_get_datatype_string(va_list arg, t_arg_info
+					*arg_info);
+
+/*
+**	u_arg.c
+**	u_arg_handlers.c
+*/
+
+char				*u_arg(va_list arg, t_arg_info *arg_info);
+
+char				*handle_ushort(va_list arg);
+char				*handle_ulong(va_list arg);
+char				*handle_ulonglong(va_list arg);
+char				*handle_uintmax(va_list arg);
+char				*handle_uint(va_list arg);
 
 /*
 **	x_arg.c
@@ -119,7 +122,6 @@ char				*d_arg(va_list arg, t_arg_info *arg_info);
 
 void				x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info);
 char				*x_arg(va_list arg, t_arg_info *arg_info);
-
 
 /*
 **	struct_functions.c
@@ -131,12 +133,14 @@ int					get_arg_info(char *str, t_arg_info *arg_info);
 
 /*
 **	padding.c
+**	padding_helpers.c
 */
 
-char				*get_spaces(t_arg_info *arg_info);
-char				*add_padding(char **str, t_arg_info *arg_info);
-char				*padding(char *str, t_arg_info *arg_info);
 void				handle_padding(char **str, t_arg_info *arg_info);
+
+char				*get_prefix(char *str, t_arg_info *arg_info);
+char				*get_spaces(t_arg_info *arg_info);
+char				*padding(char *str, t_arg_info *arg_info);
 
 /*
 **	precision.c
@@ -148,6 +152,7 @@ void				handle_precision(char **str, t_arg_info *arg_info);
 **	utils.c
 */
 
+int					flag_check(char c);
 int					specifier_check(char c);
 
 #endif

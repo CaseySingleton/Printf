@@ -18,7 +18,7 @@
 **	if padding == '0'
 **	  append to left side of fill
 **	if padding != '0'
-**	  append to the left side of str or the right side of fill <-- probably best idea
+**	  append to the left side of str or the right side of fill
 */
 
 void			x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info)
@@ -59,7 +59,7 @@ static char		*x_arg_get_padding(char *str, t_arg_info *arg_info)
 	if (arg_info->padding->prefix == '#')
 		len -= 2;
 	if (len <= 0 || (!(fill = ft_strnew(len))))
-			return (NULL);
+		return (NULL);
 	if (arg_info->padding->zero == 1 && arg_info->padding->rev != 1)
 		ft_memset(fill, '0', len);
 	else
@@ -88,7 +88,7 @@ static void		x_arg_add_padding(char **str, t_arg_info *arg_info)
 
 char			*x_arg(va_list arg, t_arg_info *arg_info)
 {
-	char 		*ret;
+	char		*ret;
 	uintmax_t	i;
 
 	i = va_arg(arg, uintmax_t);
