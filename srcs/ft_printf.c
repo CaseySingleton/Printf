@@ -56,7 +56,7 @@ void			hash_init(char *(**f)(va_list, t_arg_info *))
 	f[6] = &o_arg;
 	f[10] = NULL;
 	f['s' % NUM_SPECIFIERS] = &s_arg;
-	f['S' % NUM_SPECIFIERS] = &s_arg;
+	f['S' % NUM_SPECIFIERS] = &w_str;
 	f['c' % NUM_SPECIFIERS] = &c_arg;
 	f['d' % NUM_SPECIFIERS] = &d_arg;
 	f['D' % NUM_SPECIFIERS] = &d_arg;
@@ -104,6 +104,7 @@ int				ft_printf(const char *format, ...)
 	master = ft_strdup(format);
 	str = ft_strnew(0);
 	handle_all_args(master, &str, ap);
+	va_end(ap);
 	ft_putstr(str);
 	ret = ft_strlen(str);
 	free(master);

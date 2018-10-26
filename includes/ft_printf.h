@@ -72,12 +72,18 @@ int					get_precision(char *str, t_arg_info *arg_info, int i);
 **	argument_handling.c
 */
 
-char				*s_arg(va_list arg, t_arg_info *arg_info);
-char				*c_arg(va_list arg, t_arg_info *arg_info);
 char				*p_arg(va_list arg, t_arg_info *arg_info);
 char				*o_arg(va_list arg, t_arg_info *arg_info);
 char				*percent_arg(va_list arg, t_arg_info *arg_info);
 char				*get_type(void *arg);
+
+/*
+**	c_arg.c
+*/
+
+int					wchar_size(unsigned wide_char);
+char				*w_char(unsigned int wide, int num_bytes);
+char				*c_arg(va_list arg, t_arg_info *arg_info);
 
 /*
 **	d_arg.c
@@ -115,6 +121,14 @@ char				*handle_ulong(va_list arg);
 char				*handle_ulonglong(va_list arg);
 char				*handle_uintmax(va_list arg);
 char				*handle_uint(va_list arg);
+
+/*
+**	s_arg.c
+*/
+
+size_t				wstr_size(unsigned *s);
+char				*w_str(va_list arg, t_arg_info *arg_info);
+char				*s_arg(va_list arg, t_arg_info *arg_info);
 
 /*
 **	x_arg.c
