@@ -87,21 +87,10 @@ char				*c_arg(va_list arg, t_arg_info *arg_info);
 
 /*
 **	d_arg.c
-**	d_arg_handlers_1.c
-**	d_arg_handlers_2.c
 **	d_arg_helpers.c
 */
 
 char				*d_arg(va_list arg, t_arg_info *arg_info);
-
-char				*handle_short(va_list arg);
-char				*handle_char(va_list arg);
-char				*handle_int(va_list arg);
-char				*handle_long(va_list arg);
-char				*handle_long_long(va_list arg);
-
-char				*handle_ssizet(va_list arg);
-char				*handle_intmax(va_list arg);
 
 char				*d_arg_get_sign(t_arg_info *arg_info);
 char				*d_arg_get_fill(char *str, t_arg_info *arg_info);
@@ -115,12 +104,6 @@ char				*d_arg_get_datatype_string(va_list arg, t_arg_info
 */
 
 char				*u_arg(va_list arg, t_arg_info *arg_info);
-
-char				*handle_ushort(va_list arg);
-char				*handle_ulong(va_list arg);
-char				*handle_ulonglong(va_list arg);
-char				*handle_uintmax(va_list arg);
-char				*handle_uint(va_list arg);
 
 /*
 **	s_arg.c

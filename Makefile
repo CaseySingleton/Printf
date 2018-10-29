@@ -21,8 +21,8 @@ FILES			= ft_printf.c \
 				  padding.c padding_helpers.c \
 				  struct_functions.c argument_handling.c \
 				  c_arg.c \
-				  d_arg.c d_arg_handlers_1.c d_arg_handlers_2.c d_arg_helpers.c \
-				  u_arg.c u_arg_handlers.c \
+				  d_arg.c d_arg_helpers.c \
+				  u_arg.c \
 				  s_arg.c \
 				  x_arg.c \
 				  utils.c precision.c

@@ -70,22 +70,23 @@ char			*d_arg_get_precision(char *str, t_arg_info *arg_info)
 
 char			*d_arg_get_datatype_string(va_list arg, t_arg_info *arg_info)
 {
+	intmax_t	i;
 	char		*ret;
 
-	ret = NULL;
 	if (arg_info->flag == 'h')
-		ret = handle_short(arg);
+		i = ((intmax_t)((short)va_arg(arg, int)));
 	else if (arg_info->flag == ('h' + 'h'))
-		ret = handle_char(arg);
+		i = ((intmax_t)((char)va_arg(arg, int)));
 	else if (arg_info->flag == 'l')
-		ret = handle_long(arg);
+		i = ((intmax_t)va_arg(arg, long));
 	else if (arg_info->flag == ('l' + 'l'))
-		ret = handle_long_long(arg);
+		i = ((intmax_t)va_arg(arg, long long));
 	else if (arg_info->flag == 'z')
-		ret = handle_ssizet(arg);
+		i = ((intmax_t)va_arg(arg, size_t));
 	else if (arg_info->flag == 'j')
-		ret = handle_intmax(arg);
+		i = va_arg(arg, intmax_t);
 	else
-		ret = handle_int(arg);
+		i = ((intmax_t)va_arg(arg, int));
+	ret = ft_lltoa_base(i, 10, 0);
 	return (ret);
 }
