@@ -6,7 +6,7 @@
 #    By: csinglet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/22 18:59:57 by csinglet          #+#    #+#              #
-#    Updated: 2018/10/02 17:16:05 by csinglet         ###   ########.fr        #
+#    Updated: 2018/10/29 18:12:33 by csinglet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -96,7 +96,8 @@ FILES		= ft_abs.c\
 			  ft_putspace.c\
 			  ft_ascii_cmp.c\
 			  ft_sort_list_ascii.c\
-			  ft_free_strsplit.c
+			  ft_free_strsplit.c\
+			  ft_print_bits.c
 
 SRC			= $(addprefix srcs/, $(FILES))
 OBJ			= $(addprefix build/, $(FILES:.c=.o))

@@ -6,7 +6,7 @@
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/24 17:03:02 by csinglet          #+#    #+#             */
-/*   Updated: 2018/10/02 17:15:35 by csinglet         ###   ########.fr       */
+/*   Updated: 2018/10/29 18:12:53 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,6 @@ void				ft_sort_list_ascii(char ***lst, int start, int stop);
 void				ft_free_strsplit(char ***strings);
 char				*ft_uitoa_base(int n, int base, int upper);
 char				*ft_itoa_base(int n, int base, int upper);
+void				ft_print_bits(int num, int num_bits);
 
 #endif

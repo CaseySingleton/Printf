@@ -17,15 +17,13 @@ CFLAGS			= -Wall -Werror -Wextra -O3
 FLAGS			= $(CFLAGS)
 
 FILES			= ft_printf.c \
-				  argument_parsing.c \
+				  parsing.c \
 				  padding.c padding_helpers.c \
-				  struct_functions.c argument_handling.c \
-				  c_arg.c \
-				  d_arg.c d_arg_helpers.c \
-				  u_arg.c \
-				  s_arg.c \
-				  x_arg.c \
-				  utils.c precision.c
+				  handle_ascii.c handle_wascii.c \
+				  handle_signed.c signed_helpers.c \
+				  handle_unsigned.c \
+				  utils.c \
+				  buffer.c
 
 SRC				= $(addprefix srcs/, $(FILES))
 OBJ				= $(addprefix build/, $(FILES:.c=.o))

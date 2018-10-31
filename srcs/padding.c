@@ -28,47 +28,47 @@
 
 /*
 **	if pad_zeros == 1 append 0x to start of fill
-**	if pad_zeros == 0 append 0x to start of arg_info->arg
+**	if pad_zeros == 0 append 0x to start of pf->arg
 */
 
-static char		*only_fill(char **str, char *fill, t_arg_info *arg_info)
+static char		*only_fill(char **str, char *fill, t_pf *pf)
 {
 	char		*ret;
 
 	ret = NULL;
-	if (arg_info->padding->rev == 1 && arg_info->padding->zero != 1)
+	if ((pf->flags & F_REV) && !(pf->flags & F_PAD_ZEROS))
 		ret = ft_strjoin(*str, fill);
-	else if (arg_info->padding->rev == 1 && arg_info->padding->zero == 1
-	&& fill[0] == ' ')
+	else if ((pf->flags & F_REV) && (pf->flags & F_PAD_ZEROS) &&
+	fill[0] == ' ')
 		ret = ft_strjoin(*str, fill);
-	else if (arg_info->padding->rev != 1)
+	else if ((pf->flags & F_REV) != 1)
 		ret = ft_strjoin(fill, *str);
 	return (ret);
 }
 
 static char		*fill_and_prefix(char **str, char *fill, char *prefix,
-				t_arg_info *arg_info)
+				t_pf *pf)
 {
 	char		*ret;
 
 	ret = NULL;
-	if (arg_info->padding->zero == 1 && arg_info->padding->rev == 1 &&
+	if ((pf->flags & F_PAD_ZEROS) && (pf->flags & F_REV) &&
 	fill[0] == ' ')
 	{
 		ret = ft_strjoin_free(prefix, *str);
 		ret = ft_strjoin_free(ret, fill);
 	}
-	else if (arg_info->padding->zero == 1)
+	else if (pf->flags & F_PAD_ZEROS)
 	{
 		ret = ft_strjoin_free(prefix, fill);
 		ret = ft_strjoin_free(ret, *str);
 	}
-	else if (arg_info->padding->zero != 1 && arg_info->padding->rev == 1)
+	else if (!(pf->flags & F_PAD_ZEROS) && (pf->flags & F_REV))
 	{
 		ret = ft_strjoin_free(prefix, *str);
 		ret = ft_strjoin_free(ret, fill);
 	}
-	else if (arg_info->padding->zero != 1)
+	else if (!(pf->flags & F_PAD_ZEROS))
 	{
 		ret = ft_strjoin_free(prefix, *str);
 		ret = ft_strjoin_free(fill, ret);
@@ -77,7 +77,7 @@ static char		*fill_and_prefix(char **str, char *fill, char *prefix,
 }
 
 static char		*combine_padding_and_prefix(char **str, char *fill,
-				char *prefix, t_arg_info *arg_info)
+				char *prefix, t_pf *pf)
 {
 	char		*ret;
 
@@ -85,9 +85,9 @@ static char		*combine_padding_and_prefix(char **str, char *fill,
 	if (fill == NULL && prefix != NULL)
 		ret = ft_strjoin_free(prefix, *str);
 	else if (fill != NULL && prefix == NULL)
-		ret = only_fill(str, fill, arg_info);
+		ret = only_fill(str, fill, pf);
 	else if (fill != NULL && prefix != NULL)
-		ret = fill_and_prefix(str, fill, prefix, arg_info);
+		ret = fill_and_prefix(str, fill, prefix, pf);
 	else
 	{
 		ret = ft_strdup(*str);
@@ -96,14 +96,19 @@ static char		*combine_padding_and_prefix(char **str, char *fill,
 	return (ret);
 }
 
-void			handle_padding(char **str, t_arg_info *arg_info)
+void			handle_padding(char **str, t_pf *pf)
 {
+	// printf("padding.c handle_padding() top\n");
 	char		*prefix;
 	char		*fill;
 
 	prefix = NULL;
 	fill = NULL;
-	prefix = get_prefix(*str, arg_info);
-	fill = padding(*str, arg_info);
-	*str = combine_padding_and_prefix(str, fill, prefix, arg_info);
+	prefix = get_prefix(*str, pf);
+	fill = padding(*str, pf);
+	*str = combine_padding_and_prefix(str, fill, prefix, pf);
+	// printf("padding.c handle_padding prefix: %s\n", prefix);
+	// printf("padding.c handle_padding fill: %s\n", fill);
+	// printf("padding.c handle_padding str: %s\n", *str);
+	// printf("padding.c handle_padding() end\n");
 }

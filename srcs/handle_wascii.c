@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   c_arg.c                                            :+:      :+:    :+:   */
+/*   handle_wascii.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int				wchar_size(unsigned wide_char)
+size_t				wchar_size(unsigned wide_char)
 {
 	if (wide_char < 0x80)
 		return (1);
@@ -24,9 +24,21 @@ int				wchar_size(unsigned wide_char)
 		return (4);
 }
 
-char				*w_char(unsigned int wide, int num_bytes)
+size_t			wstr_size(unsigned *s)
 {
-	char			ret[4];
+	size_t		len;
+	int			i;
+
+	len = 0;
+	i = -1;
+	while (s[++i] != L'\0')
+		len += wchar_size(s[i]);
+	return (len);
+}
+
+char			*wide_char(unsigned int wide, int num_bytes)
+{
+	char		ret[4];
 
 	ft_bzero(ret, 4);
 	if (num_bytes == 1)
@@ -51,16 +63,26 @@ char				*w_char(unsigned int wide, int num_bytes)
 	return (ft_strdup(ret));
 }
 
-char				*c_arg(va_list arg, t_arg_info *arg_info)
+void			handle_wide_str(t_pf *pf)
 {
-	unsigned int	c;
-	int				num_bytes;
-	char			*ret;
+	int			i;
+	int			wstr_len;
+	int			wchar_len;
+	wchar_t		*temp;
+	char		*ret;
 
-	c = va_arg(arg, unsigned int);
-	num_bytes = wchar_size(c);
-	ret = ft_strnew(num_bytes);
-	ret = w_char(c, num_bytes);
-	handle_padding(&ret, arg_info);
-	return (ret);
+	temp = va_arg(pf->arg, wchar_t *);
+	wstr_len = (int)wstr_size((unsigned *)temp);
+	ret = NULL;
+	i = -1;
+	while (temp[++i] != L'\0')
+	{
+		wchar_len = wchar_size(temp[i]);
+		if (ret == NULL)
+			ret = wide_char(temp[i], wchar_len);
+		else
+			ret = ft_strjoin_free(ret, wide_char(temp[i], wchar_len));
+	}
+	write_to_buffer(pf, ret, ft_strlen(ret));
+	free(ret);
 }

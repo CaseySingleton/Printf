@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   d_arg.c                                            :+:      :+:    :+:   */
+/*   handle_signed.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -40,49 +40,50 @@ static void			append_precision(char **str, char **precision)
 		*str = ft_strjoin_free(*precision, *str);
 }
 
-static void			append_fill(char **str, char **fill, t_arg_info *arg_info)
+static void			append_fill(char **str, char **fill, t_pf *pf)
 {
 	if (*fill != NULL)
 	{
-		if (arg_info->padding->rev == 1)
+		if (pf->flags & F_REV)
 			*str = ft_strjoin_free(*str, *fill);
 		else
 			*str = ft_strjoin_free(*fill, *str);
 	}
 }
 
-static void			d_arg_combine_all(char **str, t_arg_info *arg_info)
+static void			combine_all(char **str, t_pf *pf)
 {
 	char			*sign;
 	char			*precision;
 	char			*fill;
 
-	sign = d_arg_get_sign(arg_info);
-	precision = d_arg_get_precision(*str, arg_info);
-	fill = d_arg_get_fill(*str, arg_info);
+	sign = signed_get_sign(pf);
+	precision = signed_get_precision(*str, pf);
+	fill = signed_get_fill(*str, pf);
 	append_sign(&sign, &fill, &precision, str);
 	append_precision(str, &precision);
-	append_fill(str, &fill, arg_info);
+	append_fill(str, &fill, pf);
 }
 
-char				*d_arg(va_list arg, t_arg_info *arg_info)
+char				*handle_signed(t_pf *pf)
 {
 	char			*ret;
 	char			*temp;
 
-	ret = d_arg_get_datatype_string(arg, arg_info);
-	if (ft_strcmp(ret, "0") == 0 && arg_info->precision->total == 0)
+	ret = get_signed_data_type(pf, 10, 0);
+	if (ft_strcmp(ret, "0") == 0 && pf->precision == 0)
 	{
 		free(ret);
 		ret = ft_strnew(0);
 	}
 	else if (ret[0] == '-')
 	{
-		arg_info->padding->neg = 1;
+		BIT_ON(pf->flags, F_MINUS);
 		temp = ft_strdup(ret + 1);
 		free(ret);
 		ret = temp;
 	}
-	d_arg_combine_all(&ret, arg_info);
+	combine_all(&ret, pf);
+	write_to_buffer(pf, ret, ft_strlen(ret));
 	return (ret);
 }

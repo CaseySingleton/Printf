@@ -20,136 +20,129 @@
 # include <stdint.h>
 # include "libft.h"
 
-# define NUM_SPECIFIERS 14
-# define NUM_FLAGS 6
+# define PF_BUFF_SIZE 256
+
+/*
+**	Unix color codes
+*/
 
 # define BOLD "\033[1m\033[30m"
 # define RESET "\033[0m"
 
-typedef struct		s_padding
-{
-	int				total;
-	int				prefix;
-	int				zero;
-	int				neg;
-	int				pos;
-	int				rev;
-	int				spaces;
-}					t_padding;
+/*
+**	Bit operations
+*/
 
-typedef struct		s_precision
-{
-	int				total;
-}					t_precision;
-
-typedef struct		s_arg_info
-{
-	int				hash_key;
-	int				specifier;
-	int				flag;
-	t_padding		*padding;
-	t_precision		*precision;
-}					t_arg_info;
+# define BIT_ON(x, y) x |= y
+# define BIT_OFF(x, y) x &= (~y)
+# define BIT_TOGGLE(x, y) x ^= y
 
 /*
-**	ft_printf.c
+**	Bit masks
+*/
+
+# define F_H			(1 << 0)
+# define F_HH			(1 << 1)
+# define F_L			(1 << 2)
+# define F_LL			(1 << 3)
+# define F_Z			(1 << 4)
+# define F_J			(1 << 5)
+# define F_REV			(1 << 6)
+# define F_PREFIX		(1 << 7)
+# define F_PLUS			(1 << 8)
+# define F_MINUS		(1 << 9)
+# define F_PAD_ZEROS	(1 << 10)
+
+typedef struct		s_pf
+{
+	va_list			arg;
+	int				total_bytes;
+	char			*master;
+	char			buffer[PF_BUFF_SIZE];
+	int				buffer_index;
+	int				specifier;
+	int				padding;
+	int				precision;
+	int				count_spaces;
+	int				flags;
+}					t_pf;
+
+/*
+**	-------------------------- ft_printf.c --------------------------
 */
 
 int					ft_printf(const char *format, ...);
-void				print_arg_info(t_arg_info *arg_info);
 
 /*
-**	argument_parsing.c
+**	--------------------------- buffer.c ----------------------------
 */
 
-int					get_info(char *str, t_arg_info *arg_info);
-int					get_mods(char *str, t_arg_info *arg_info, int i);
-int					get_flags(char *str, t_arg_info *arg_info, int i);
-int					get_padding(char *str, t_arg_info *arg_info, int i);
-int					get_precision(char *str, t_arg_info *arg_info, int i);
+void				write_to_buffer(t_pf *pf, char *str, int bytes);
+void				print_buffer(t_pf *pf, int bytes);
 
 /*
-**	argument_handling.c
+**	--------------------------- parsing.c ---------------------------
 */
 
-char				*p_arg(va_list arg, t_arg_info *arg_info);
-char				*o_arg(va_list arg, t_arg_info *arg_info);
-char				*percent_arg(va_list arg, t_arg_info *arg_info);
-char				*get_type(void *arg);
+int					get_info(t_pf *pf);
+int					get_mods(char *str, t_pf *pf, int i);
+int					get_flags(t_pf *pf, int i);
+int					get_padding(t_pf *pf, int i);
+int					get_precision(t_pf *pf, int i);
 
 /*
-**	c_arg.c
+**	----------------- padding.c / padding_helpers.c -----------------
 */
 
-int					wchar_size(unsigned wide_char);
-char				*w_char(unsigned int wide, int num_bytes);
-char				*c_arg(va_list arg, t_arg_info *arg_info);
+void				handle_padding(char **str, t_pf *pf);
+char				*get_prefix(char *str, t_pf *pf);
+char				*get_spaces(t_pf *pf);
+void				handle_precision(char **str, t_pf *pf);
+char				*padding(char *str, t_pf *pf);
 
 /*
-**	d_arg.c
-**	d_arg_helpers.c
+**	------------------------ handle_ascii.c -------------------------
 */
 
-char				*d_arg(va_list arg, t_arg_info *arg_info);
-
-char				*d_arg_get_sign(t_arg_info *arg_info);
-char				*d_arg_get_fill(char *str, t_arg_info *arg_info);
-char				*d_arg_get_precision(char *str, t_arg_info *arg_info);
-char				*d_arg_get_datatype_string(va_list arg, t_arg_info
-					*arg_info);
+void				handle_str(t_pf *pf);
+void				handle_char(t_pf *pf);
+char				*handle_percent(t_pf *pf);
+void				handle_ascii(t_pf *pf);
 
 /*
-**	u_arg.c
-**	u_arg_handlers.c
+**	------------------------ handle_wascii.c ------------------------
 */
 
-char				*u_arg(va_list arg, t_arg_info *arg_info);
-
-/*
-**	s_arg.c
-*/
-
+size_t				wchar_size(unsigned wide_char);
 size_t				wstr_size(unsigned *s);
-char				*w_str(va_list arg, t_arg_info *arg_info);
-char				*s_arg(va_list arg, t_arg_info *arg_info);
+char				*wide_char(unsigned int wide, int num_bytes);
+void				handle_wide_str(t_pf *pf);
 
 /*
-**	x_arg.c
+**	-------------- handle_signed.c / signed_helpers.c ---------------
 */
 
-void				x_arg_add_0x(char **fill, char **str, t_arg_info *arg_info);
-char				*x_arg(va_list arg, t_arg_info *arg_info);
+char				*handle_signed(t_pf *pf);
+char				*get_signed_data_type(t_pf *pf, int base, int upper);
+char				*signed_get_sign(t_pf *pf);
+char				*signed_get_fill(char *str, t_pf *pf);
+char				*signed_get_precision(char *str, t_pf *pf);
 
 /*
-**	struct_functions.c
+**	----------------------- handle_unsigned.c -----------------------
 */
 
-void				arg_info_init(t_arg_info **arg_info);
-void				print_arg_info(t_arg_info *arg_info);
-int					get_arg_info(char *str, t_arg_info *arg_info);
+char				*get_unsigned_data_type(t_pf *pf, int base, int upper);
+void				handle_unsigned(t_pf *pf);
 
 /*
-**	padding.c
-**	padding_helpers.c
-*/
-
-void				handle_padding(char **str, t_arg_info *arg_info);
-
-char				*get_prefix(char *str, t_arg_info *arg_info);
-char				*get_spaces(t_arg_info *arg_info);
-char				*padding(char *str, t_arg_info *arg_info);
-
-/*
-**	precision.c
-*/
-
-void				handle_precision(char **str, t_arg_info *arg_info);
-
-/*
-**	utils.c
+**	---------------------------- utils.c ----------------------------
 */
 
 int					flag_check(char c);
+int					signed_specifier_check(char c);
+int					unsigned_specifier_check(char c);
+int					ascii_specifier_check(char c);
 int					specifier_check(char c);
 
 #endif

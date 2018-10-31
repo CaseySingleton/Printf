@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   argument_parsing.c                                 :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -33,75 +33,81 @@
 **	so the question is: how do I parse all the info correctly for %d while
 **	not messing up anything for the other specifiers?
 **
-**	I could go back through the string if the specifier == 'd' and parse again?
+**	I could go back through the pf->string if the specifier == 'd' and parse again?
 **	But that seems slow seeing as I would have to iterate a second time
 */
 
-static int		pleasing_the_norm(char *str, t_arg_info *arg_info)
+static int		pleasing_the_norm(t_pf *pf)
 {
 	int			i;
 
 	i = 1;
-	while (specifier_check(str[i]) != 1 && str[i] != '\0')
+	while (specifier_check(pf->master[i]) != 1 && pf->master[i] != '\0')
 	{
-		if (str[i] == '#')
-			arg_info->padding->prefix = 1;
-		if (flag_check(str[i]) == 1)
-			i = get_flags(str, arg_info, i);
-		if (ft_isdigit(str[i]) == 1)
-			i = get_padding(str, arg_info, i);
-		if (str[i] == '.')
-			i = get_precision(str, arg_info, i);
-		if (str[i] == ' ')
-			arg_info->padding->spaces += 1;
-		if (str[i] == '+')
-			arg_info->padding->pos = 1;
-		if (str[i] == '-')
-			arg_info->padding->rev = 1;
-		if (specifier_check(str[i]) != 1)
+		if (pf->master[i] == '#')
+			BIT_ON(pf->flags, F_PREFIX);
+		if (flag_check(pf->master[i]) == 1)
+			i = get_flags(pf, i);
+		if (ft_isdigit(pf->master[i]) == 1)
+			i = get_padding(pf, i);
+		if (pf->master[i] == '.')
+			i = get_precision(pf, i);
+		if (pf->master[i] == ' ')
+			pf->count_spaces++;
+		if (pf->master[i] == '+')
+			BIT_ON(pf->flags, F_PLUS);
+		if (pf->master[i] == '-')
+			BIT_ON(pf->flags, F_REV);
+		if (specifier_check(pf->master[i]) != 1)
 			i++;
 	}
 	return (i);
 }
 
-int				get_info(char *str, t_arg_info *arg_info)
+int				get_info(t_pf *pf)
 {
 	int			i;
 
-	i = pleasing_the_norm(str, arg_info);
-	if (str[i] != '\0')
-		arg_info->specifier = str[i++];
-	if (arg_info->padding->spaces != i - 2 || (arg_info->specifier != 'd' &&
-	arg_info->specifier != 'D'))
-		arg_info->padding->spaces = 0;
-	arg_info->hash_key = arg_info->specifier % NUM_SPECIFIERS;
+	i = pleasing_the_norm(pf);
+	if (pf->master[i] != '\0')
+		pf->specifier = pf->master[i++];
+	if (pf->count_spaces != i - 2 || (pf->specifier != 'd' &&
+	pf->specifier != 'D'))
+		pf->count_spaces = 0;
 	return (i);
 }
 
-int				get_flags(char *str, t_arg_info *arg_info, int i)
+int				get_flags(t_pf *pf, int i)
 {
-	if (str[i] == str[i + 1])
+	if (pf->master[i] == pf->master[i + 1])
 	{
-		arg_info->flag = (str[i] + str[i]);
+		BIT_ON(pf->flags, ((pf->master[i] == 'l') ? F_LL : F_HH));
 		return (i + 2);
 	}
-	arg_info->flag = str[i];
+	if (pf->master[i] == 'z')
+		BIT_ON(pf->flags, F_Z);
+	else if (pf->master[i] == 'j')
+		BIT_ON(pf->flags, F_J);
+	else if (pf->master[i] == 'l')
+		BIT_ON(pf->flags, F_L);
+	else if (pf->master[i] == 'h')
+		BIT_ON(pf->flags, F_H);
 	return (i + 1);
 }
 
-int				get_padding(char *str, t_arg_info *arg_info, int i)
+int				get_padding(t_pf *pf, int i)
 {
-	if (str[i] == '0')
+	if (pf->master[i] == '0')
 	{
-		arg_info->padding->zero = 1;
+		BIT_ON(pf->flags, F_PAD_ZEROS);
 		i++;
 	}
-	if (ft_isdigit(str[i]) == 1)
+	if (ft_isdigit(pf->master[i]) == 1)
 	{
-		arg_info->padding->total = ft_atoi(str + i);
-		if (arg_info->padding->total < 0)
+		pf->padding = ft_atoi(pf->master + i);
+		if (pf->padding < 0)
 			i++;
-		return (i += ft_numlen(ft_abs(arg_info->padding->total)));
+		return (i += ft_numlen(ft_abs(pf->padding)));
 	}
 	else
 		return (i);
@@ -112,23 +118,23 @@ int				get_padding(char *str, t_arg_info *arg_info, int i)
 **	an error occures
 */
 
-int				get_precision(char *str, t_arg_info *arg_info, int i)
+int				get_precision(t_pf *pf, int i)
 {
-	if (str[i] == '+')
+	if (pf->master[i] == '+')
 		i++;
-	if (ft_isdigit(str[i + 1]) != 1)
+	if (ft_isdigit(pf->master[i + 1]) != 1)
 	{
-		arg_info->precision->total = 0;
+		pf->precision = 0;
 		return (i);
 	}
 	i++;
-	arg_info->precision->total = ft_atoi(str + i);
-	if (arg_info->precision->total < 0)
+	pf->precision = ft_atoi(pf->master + i);
+	if (pf->precision < 0)
 	{
 		ft_putstr("Precision can not be negative\n");
 		exit(-1);
 	}
-	return (i += ft_numlen(arg_info->precision->total));
+	return (i += ft_numlen(pf->precision));
 }
 
 /*
