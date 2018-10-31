@@ -38,9 +38,9 @@ size_t			wstr_size(unsigned *s)
 
 char			*wide_char(unsigned int wide, int num_bytes)
 {
-	char		ret[4];
+	char		*ret;
 
-	ft_bzero(ret, 4);
+	ret = ft_strnew(num_bytes);
 	if (num_bytes == 1)
 	{
 		ret[0] = wide;
@@ -60,7 +60,7 @@ char			*wide_char(unsigned int wide, int num_bytes)
 		ret[num_bytes - 2] = ((wide >> 6) & 0x3F) | 0x80;
 	}
 	ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
-	return (ft_strdup(ret));
+	return (ret);
 }
 
 void				handle_wide_char(t_pf *pf)
