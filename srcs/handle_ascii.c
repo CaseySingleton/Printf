@@ -49,7 +49,7 @@ void				handle_char(t_pf *pf)
 			ret = ft_strnew(0);
 		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
 	}
-	else
+	else if (pf->specifier == 'C')
 	{
 		num_bytes = wchar_size(c);
 		ret = wide_char(c, num_bytes);
@@ -57,6 +57,11 @@ void				handle_char(t_pf *pf)
 		if (pf->padding > 0)
 			num_bytes += pf->padding - 1;
 		write_to_buffer(pf, ret, num_bytes);
+	}
+	else
+	{
+		ret = ft_strnew(1);
+		ret[1] = c;
 	}
 	free(ret);
 }
