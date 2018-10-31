@@ -67,8 +67,6 @@ void					handle_char(t_pf *pf)
 	char				*ret;
 
 	c = va_arg(pf->arg, int);
-	printf("c value: %d\n", c);
-	printf("c: %c\n", c);
 	if (c == 0)
 	{
 		if (pf->padding > 0)
