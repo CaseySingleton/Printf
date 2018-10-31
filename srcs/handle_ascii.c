@@ -31,7 +31,7 @@ void			handle_str(t_pf *pf)
 	free(ret);
 }
 
-void				handle_char(t_pf *pf)
+void				handle_wide_char(t_pf *pf)
 {
 	unsigned int	c;
 	int				num_bytes;
@@ -49,7 +49,7 @@ void				handle_char(t_pf *pf)
 			ret = ft_strnew(0);
 		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
 	}
-	else if (pf->specifier == 'C')
+	else
 	{
 		num_bytes = wchar_size(c);
 		ret = wide_char(c, num_bytes);
@@ -58,12 +58,35 @@ void				handle_char(t_pf *pf)
 			num_bytes += pf->padding - 1;
 		write_to_buffer(pf, ret, num_bytes);
 	}
+	free(ret);
+}
+
+void					handle_char(t_pf *pf)
+{
+	char				c;
+	char				*ret;
+
+	c = va_arg(pf->arg, int);
+	printf("c value: %d\n", c);
+	printf("c: %c\n", c);
+	if (c == 0)
+	{
+		if (pf->padding > 0)
+		{
+			ret = ft_strnew(pf->padding - 1);
+			ft_memset(ret, ' ', pf->padding - 1);
+		}
+		else
+			ret = ft_strnew(0);
+		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
+	}
 	else
 	{
 		ret = ft_strnew(1);
-		ret[1] = c;
+		ret[0] = c;
 	}
-	free(ret);
+	write_to_buffer(pf, ret, 1);
+
 }
 
 char					*handle_percent(t_pf *pf)
@@ -84,8 +107,10 @@ void					handle_ascii(t_pf *pf)
 		handle_str(pf);
 	else if (pf->specifier == 'S')
 		handle_wide_str(pf);
-	else if (pf->specifier == 'c' || pf->specifier == 'C')
+	else if (pf->specifier == 'c')
 		handle_char(pf);
+	else if (pf->specifier == 'C')
+		handle_wide_char(pf);
 	else if (pf->specifier == '%')
 		handle_percent(pf);
 	else
