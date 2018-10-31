@@ -21,7 +21,7 @@ char			*get_signed_data_type(t_pf *pf, int base, int upper)
 		i = ((intmax_t)((short)va_arg(pf->arg, int)));
 	else if (pf->flags & F_HH)
 		i = ((intmax_t)((char)va_arg(pf->arg, int)));
-	else if (pf->flags & F_L)
+	else if (pf->flags & F_L || pf->specifier == 'D')
 		i = ((intmax_t)va_arg(pf->arg, long));
 	else if (pf->flags & F_LL)
 		i = ((intmax_t)va_arg(pf->arg, long long));
