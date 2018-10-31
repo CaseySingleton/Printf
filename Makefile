@@ -36,8 +36,8 @@ ft:
 	@make -C libft
 	@make re
 
-test: $(NAME)
-	@$(CC) $(CFLAGS) main.c $(NAME) -o printf
+test:
+	@$(CC) $(CFLAGS) main.c libftprintf.a $(NAME) -o printf
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: libft.a"
