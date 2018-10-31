@@ -52,7 +52,7 @@ build:
 	@mkdir build
 
 build/%.o: srcs/%.c | build
-	@echo "Building $@"
+	@echo "  Building $@"
 	@$(CC) -I includes -c $< -o $@
 
 clean:

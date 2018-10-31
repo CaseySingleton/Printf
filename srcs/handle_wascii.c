@@ -63,6 +63,36 @@ char			*wide_char(unsigned int wide, int num_bytes)
 	return (ft_strdup(ret));
 }
 
+void				handle_wide_char(t_pf *pf)
+{
+	unsigned int	c;
+	int				num_bytes;
+	char			*ret;
+
+	c = va_arg(pf->arg, unsigned int);
+	if (c == 0)
+	{
+		if (pf->padding > 0)
+		{
+			ret = ft_strnew(pf->padding - 1);
+			ft_memset(ret, ' ', pf->padding - 1);
+		}
+		else
+			ret = ft_strnew(0);
+		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
+	}
+	else
+	{
+		num_bytes = wchar_size(c);
+		ret = wide_char(c, num_bytes);
+		handle_padding(&ret, pf);
+		if (pf->padding > 0)
+			num_bytes += pf->padding - 1;
+		write_to_buffer(pf, ret, num_bytes);
+	}
+	free(ret);
+}
+
 void			handle_wide_str(t_pf *pf)
 {
 	int			i;
