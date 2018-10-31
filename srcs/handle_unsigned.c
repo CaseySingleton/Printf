@@ -21,7 +21,7 @@ char			*get_unsigned_data_type(t_pf *pf, int base, int upper)
 		i = ((intmax_t)((unsigned short)va_arg(pf->arg, unsigned int)));
 	else if ((pf->flags & F_L) || pf->specifier == 'U')
 		i = ((intmax_t)va_arg(pf->arg, unsigned long));
-	else if (pf->flags & F_LL)
+	else if (pf->flags & F_LL || pf->specifier == 'p')
 		i = ((intmax_t)va_arg(pf->arg, unsigned long long));
 	else if (pf->flags & F_J)
 		i = va_arg(pf->arg, uintmax_t);
