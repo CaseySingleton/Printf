@@ -92,6 +92,12 @@ void				handle_wide_char(t_pf *pf)
 		write_to_buffer(pf, ret, char_len);
 		free(ret);
 	}
+	else
+	{
+		ret = ft_strdup("?");
+		write_to_buffer(pf, ret, 1);
+		free (ret);
+	}
 }
 
 void			handle_wide_str(t_pf *pf)
