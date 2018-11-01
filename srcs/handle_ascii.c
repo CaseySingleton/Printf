@@ -37,7 +37,7 @@ void					handle_char(t_pf *pf)
 	char				*ret;
 
 	ret = NULL;
-	c = va_arg(pf->arg, int);
+	c = ((char)va_arg(pf->arg, int));
 	if (c == 0)
 	{
 		if (pf->padding > 0)

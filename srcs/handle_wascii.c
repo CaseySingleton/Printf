@@ -41,7 +41,7 @@ char			*wide_char(unsigned int wide, int num_bytes)
 	char		*ret;
 
 	ret = ft_strnew(num_bytes);
-	if (num_bytes == 1)
+	if (num_bytes == 1 && num_bytes < MB_CUR_MAX)
 	{
 		ret[0] = wide;
 		return (ft_strdup(ret));
@@ -65,11 +65,12 @@ char			*wide_char(unsigned int wide, int num_bytes)
 
 void				handle_wide_char(t_pf *pf)
 {
-	unsigned int	c;
-	int				num_bytes;
+	unsigned		c;
+	int				char_len;
 	char			*ret;
 
-	c = va_arg(pf->arg, unsigned int);
+	c = va_arg(pf->arg, unsigned);
+	char_len = wchar_size(c);
 	if (c == 0)
 	{
 		if (pf->padding > 0)
@@ -80,17 +81,17 @@ void				handle_wide_char(t_pf *pf)
 		else
 			ret = ft_strnew(0);
 		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
+		free(ret);
 	}
-	else
+	else if (char_len < MB_CUR_MAX)
 	{
-		num_bytes = wchar_size(c);
-		ret = wide_char(c, num_bytes);
+		ret = wide_char(c, char_len);
 		handle_padding(&ret, pf);
 		if (pf->padding > 0)
-			num_bytes += pf->padding - 1;
-		write_to_buffer(pf, ret, num_bytes);
+			char_len += pf->padding - 1;
+		write_to_buffer(pf, ret, char_len);
+		free(ret);
 	}
-	free(ret);
 }
 
 void			handle_wide_str(t_pf *pf)

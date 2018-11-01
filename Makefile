@@ -37,14 +37,14 @@ ft:
 	@make re
 
 test:
-	@$(CC) $(CFLAGS) main.c libftprintf.a $(NAME) -o printf
+	@$(CC) $(CFLAGS) main.c libftprintf.a $(NAME) -o printf -I includes
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: libft.a"
 	@make -C libft
 	@echo "Creating archive: $@"
-	@cp libft/libft.a ./$(NAME)
-	@ar rc $@ $(OBJ)
+	@cp libft/libft.a ./$@
+	@ar rc $@ $^
 	@ranlib $@
 
 build:
