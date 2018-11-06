@@ -41,9 +41,9 @@ char			*wide_char(unsigned int wide, int num_bytes)
 	char		ret[4];
 
 	ft_bzero(ret, 4);
-	if (num_bytes == 1 && num_bytes <= MB_CUR_MAX)
+	if (num_bytes == 1)
 		ret[0] = wide;
-	else if (num_bytes <= MB_CUR_MAX)
+	else
 	{
 		if (num_bytes == 2)
 			ret[0] = ((wide & 0x1F << 6) >> 6) | 0xC0;
