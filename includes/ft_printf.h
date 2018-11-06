@@ -113,7 +113,7 @@ void				handle_ascii(t_pf *pf);
 **	------------------------ handle_wascii.c ------------------------
 */
 
-size_t				wchar_size(unsigned wide_char);
+size_t				wchar_size(unsigned int wide_char);
 size_t				wstr_size(unsigned *s);
 char				*wide_char(unsigned int wide, int num_bytes);
 void				handle_wide_char(t_pf *pf);

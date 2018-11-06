@@ -14,7 +14,6 @@
 
 static void		dispatch(t_pf *pf)
 {
-	
 	pf->flags = 0;
 	pf->precision = -1;
 	pf->master += get_info(pf);
@@ -57,9 +56,3 @@ int				ft_printf(const char *format, ...)
 	handle_all_args(&pf);
 	return (pf.total_bytes);
 }
-
-/*
-**	Start by creating a function that iterates through a string.
-**	  if a '%' is found
-**		do something about it
-*/

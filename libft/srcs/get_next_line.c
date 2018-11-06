@@ -75,5 +75,3 @@ int					get_next_line(const int fd, char **line)
 		ft_strclr(file->content);
 	return (1);
 }
-
-

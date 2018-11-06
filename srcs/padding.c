@@ -98,7 +98,6 @@ static char		*combine_padding_and_prefix(char **str, char *fill,
 
 void			handle_padding(char **str, t_pf *pf)
 {
-	// printf("padding.c handle_padding() top\n");
 	char		*prefix;
 	char		*fill;
 
@@ -107,8 +106,4 @@ void			handle_padding(char **str, t_pf *pf)
 	prefix = get_prefix(*str, pf);
 	fill = padding(*str, pf);
 	*str = combine_padding_and_prefix(str, fill, prefix, pf);
-	// printf("padding.c handle_padding prefix: %s\n", prefix);
-	// printf("padding.c handle_padding fill: %s\n", fill);
-	// printf("padding.c handle_padding str: %s\n", *str);
-	// printf("padding.c handle_padding() end\n");
 }

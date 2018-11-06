@@ -12,31 +12,6 @@
 
 #include "ft_printf.h"
 
-/*
-**	'#' can be before or after '-'
-**
-**	if there are spaces between % and d and there is nothing but spaces
-**	between the two, those spaces are added to the front of the d arg
-**	(%+d, 42)    -> '+42'
-**	(% d, 42)    -> ' 42'
-**	(%+ d, 42)   -> '+42'
-**	(% +d, 42)   -> '+42'
-**	(%+  d, 42)  -> '+42'
-**	(% ++d, 42)  -> '+42'
-**	(%++ d, 42)  -> '+42'
-**	(%0+5d, 42)  -> '+0042' the '+' takes up a padding spot
-**	(%05d, -42)  -> '-0042' same goes for if the number is negative
-**	(%0+5d, -42) -> '-0042'
-**	looks like if a postive symbol is given but the number is negative,
-**	the number being negative wins over the positive symbol
-**
-**	so the question is: how do I parse all the info correctly for %d while
-**	not messing up anything for the other specifiers?
-**
-**	I could go back through the pf->string if the specifier == 'd' and parse again?
-**	But that seems slow seeing as I would have to iterate a second time
-*/
-
 static int		pleasing_the_norm(t_pf *pf)
 {
 	int			i;

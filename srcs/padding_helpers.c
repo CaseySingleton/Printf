@@ -45,7 +45,8 @@ char			*get_spaces(t_pf *pf)
 	spaces = NULL;
 	if (pf->count_spaces != 0 && (pf->flags & F_MINUS) != 1)
 	{
-		pf->count_spaces -= (((pf->flags & F_MINUS) || (pf->flags & F_PLUS)) ? 1 : 0);
+		if ((pf->flags & F_MINUS) || (pf->flags & F_PLUS))
+			pf->count_spaces--;
 		if (!(spaces = ft_strnew(pf->count_spaces)))
 			return (NULL);
 		ft_memset(spaces, ' ', pf->count_spaces);

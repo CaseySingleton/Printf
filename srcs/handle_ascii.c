@@ -12,10 +12,10 @@
 
 #include "ft_printf.h"
 
-void			handle_str(t_pf *pf)
+void					handle_str(t_pf *pf)
 {
-	char		*temp;
-	char		*ret;
+	char				*temp;
+	char				*ret;
 
 	temp = va_arg(pf->arg, char *);
 	if (temp == NULL)
@@ -33,31 +33,29 @@ void			handle_str(t_pf *pf)
 
 void					handle_char(t_pf *pf)
 {
-	char				c;
+	unsigned			c;
+	int					num_bytes;
 	char				*ret;
 
 	ret = NULL;
-	c = ((char)va_arg(pf->arg, int));
+	c = (va_arg(pf->arg, unsigned int));
+	num_bytes = wchar_size(c);
 	if (c == 0)
 	{
-		if (pf->padding > 0)
-		{
-			ret = ft_strnew(pf->padding - 1);
-			ft_memset(ret, ' ', pf->padding - 1);
-		}
-		else
-			ret = ft_strnew(0);
-		write_to_buffer(pf, ret, ft_strlen(ret) + 1);
+		ret = ft_strnew(pf->padding - ((pf->padding > 0) ? 1 : 0));
+		ft_memset(ret, ' ', pf->padding - ((pf->padding > 0) ? 1 : 0));
 	}
+	else if (num_bytes == 1)
+		ret = wide_char(c, num_bytes);
 	else
 	{
 		ret = ft_strnew(1);
-		ret[0] = c;
-		handle_padding(&ret, pf);
-		write_to_buffer(pf, ret, ft_strlen(ret));
+		ret[0] = -1;
 	}
-	if (ret != NULL)
-		free(ret);
+	if (c != 0)
+		handle_padding(&ret, pf);
+	write_to_buffer(pf, ret, ft_strlen(ret) + ((c == 0) ? 1 : 0));
+	free(ret);
 }
 
 void					handle_percent(t_pf *pf)

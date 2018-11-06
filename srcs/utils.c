@@ -19,14 +19,14 @@ inline int		flag_check(char c)
 	return (0);
 }
 
-int		signed_specifier_check(char c)
+int				signed_specifier_check(char c)
 {
 	if (c == 'd' || c == 'D' || c == 'i')
 		return (1);
 	return (0);
 }
 
-int		unsigned_specifier_check(char c)
+int				unsigned_specifier_check(char c)
 {
 	if (c == 'p' || c == 'o' || c == 'O' || c == 'u' || c == 'U' ||
 		c == 'x' || c == 'X')
@@ -34,7 +34,7 @@ int		unsigned_specifier_check(char c)
 	return (0);
 }
 
-int		ascii_specifier_check(char c)
+int				ascii_specifier_check(char c)
 {
 	if (c == 's' || c == 'S' || c == 'c' || c == 'C' || c == '%')
 		return (1);
