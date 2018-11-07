@@ -46,7 +46,10 @@ void					handle_char(t_pf *pf)
 		ft_memset(ret, ' ', pf->padding - ((pf->padding > 0) ? 1 : 0));
 	}
 	else
-		ret = wide_char(c, 1);
+	{
+		ret = ft_strnew(1);
+		*ret = c;
+	}
 	if (c != 0)
 		handle_padding(&ret, pf);
 	write_to_buffer(pf, ret, ft_strlen(ret) + ((c == 0) ? 1 : 0));

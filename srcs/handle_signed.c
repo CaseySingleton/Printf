@@ -65,7 +65,7 @@ static void			combine_all(char **str, t_pf *pf)
 	append_fill(str, &fill, pf);
 }
 
-char				*handle_signed(t_pf *pf)
+void				handle_signed(t_pf *pf)
 {
 	char			*ret;
 	char			*temp;
@@ -85,5 +85,5 @@ char				*handle_signed(t_pf *pf)
 	}
 	combine_all(&ret, pf);
 	write_to_buffer(pf, ret, ft_strlen(ret));
-	return (ret);
+	free(ret);
 }

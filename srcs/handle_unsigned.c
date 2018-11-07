@@ -66,4 +66,5 @@ void			handle_unsigned(t_pf *pf)
 	handle_precision(&ret, pf);
 	handle_padding(&ret, pf);
 	write_to_buffer(pf, ret, ft_strlen(ret));
+	free(ret);
 }
