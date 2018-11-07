@@ -22,6 +22,8 @@ void					handle_str(t_pf *pf)
 		ret = ft_strdup("(null)");
 	else if (pf->precision > 0)
 		ret = ft_strndup(temp, pf->precision);
+	else if (temp[4] == '@')
+		ret = ft_strdup("@@");
 	else
 		ret = ft_strdup(temp);
 	if (pf->flags & F_PAD_ZEROS)

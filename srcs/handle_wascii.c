@@ -36,7 +36,7 @@ size_t			wstr_size(unsigned *s)
 	return (len);
 }
 
-void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
+char			*wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 {
 	char		ret[4];
 
@@ -59,36 +59,40 @@ void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 		}
 		ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
 	}
-	write_to_buffer(pf, ret, ((num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
+	return(ft_strndup(ret, (num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
 }
 
-void			handle_wide_char(t_pf *pf)
+char			*handle_wide_char(t_pf *pf)
 {
+	char			*ret;
 	unsigned int	c;
 	wchar_t			l;
 	int				char_len;
 
 	c = va_arg(pf->arg, unsigned int);
 	char_len = wchar_size(c);
-	wide_char(pf, c, char_len);
+	ret = wide_char(pf, c, char_len);
+	return (ret);
 }
 
 void			handle_wide_str(t_pf *pf)
 {
-	write_to_buffer(pf, "@@", 2);
-	// int			i;
-	// int			wstr_len;
-	// int			wchar_len;
-	// wchar_t		*wstr;
+	int			wstr_len;
+	int			wchar_len;
+	char		*str;
+	wchar_t		*wstr;
 
-	// wstr = va_arg(pf->arg, wchar_t *);
-	// wstr_len = (int)wstr_size((unsigned *)wstr);
-	// wchar_len = 0;
-	// while ((wstr_len -= wchar_len) > 0)
-	// {
-	// 	wchar_len = wchar_size(*wstr);
-	// 	if (wchar_len <= wstr_len)
-	// 		wide_char(pf, *wstr, wchar_len);
-	// 	wstr++;
-	// }
+	wstr = va_arg(pf->arg, wchar_t *);
+	wstr_len = (int)wstr_size((unsigned *)wstr);
+	wchar_len = 0;
+	while ((wstr_len -= wchar_len) > 0)
+	{
+		wchar_len = wchar_size(*wstr);
+		if (wchar_len <= wstr_len)
+		{
+			str = wide_char(pf, *wstr, wchar_len);
+			write_to_buffer(pf, str, wchar_len);
+		}
+		wstr++;
+	}
 }
