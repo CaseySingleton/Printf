@@ -40,9 +40,9 @@ void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 {
 	char		ret[4];
 
-	if (num_bytes <= MB_CUR_MAX)
-	{
-		if (num_bytes == 1)
+	// if (num_bytes <= MB_CUR_MAX)
+	// {
+		if (num_bytes == 1 || num_bytes > MB_CUR_MAX)
 			ret[0] = wide;
 		else
 		{
@@ -62,7 +62,7 @@ void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 			ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
 		}
 		write_to_buffer(pf, ret, num_bytes);
-	}
+	// }
 }
 
 void			handle_wide_char(t_pf *pf)
@@ -81,8 +81,8 @@ void			handle_wide_char(t_pf *pf)
 	// else
 	// {
 		wide_char(pf, c, char_len);
-		if (pf->padding > 0)
-			char_len += pf->padding - 1;
+		// if (pf->padding > 0)
+		// 	char_len += pf->padding - 1;
 	// }
 	// write_to_buffer(pf, ret, ((c == 0) ? ft_strlen(ret) + 1 : char_len));
 }
