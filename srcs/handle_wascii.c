@@ -73,18 +73,7 @@ void			handle_wide_char(t_pf *pf)
 
 	c = va_arg(pf->arg, unsigned int);
 	char_len = wchar_size(c);
-	// if (c == 0)
-	// {
-	// 	ret = ft_strnew(pf->padding - ((pf->padding > 0) ? 1 : 0));
-	// 	ft_memset(ret, ' ', pf->padding - ((pf->padding > 0) ? 1 : 0));
-	// }
-	// else
-	// {
-		wide_char(pf, c, char_len);
-		// if (pf->padding > 0)
-		// 	char_len += pf->padding - 1;
-	// }
-	// write_to_buffer(pf, ret, ((c == 0) ? ft_strlen(ret) + 1 : char_len));
+	wide_char(pf, c, char_len);
 }
 
 void			handle_wide_str(t_pf *pf)
@@ -92,14 +81,15 @@ void			handle_wide_str(t_pf *pf)
 	int			i;
 	int			wstr_len;
 	int			wchar_len;
-	wchar_t		*temp;
+	wchar_t		*wstr;
 
-	temp = va_arg(pf->arg, wchar_t *);
-	wstr_len = (int)wstr_size((unsigned *)temp);
-	i = -1;
-	while (temp[++i] != L'\0')
+	wstr = va_arg(pf->arg, wchar_t *);
+	wstr_len = (int)wstr_size((unsigned *)wstr);
+	wchar_len = 0;
+	while ((wstr_len -= wchar_len) > 0)
 	{
-		wchar_len = wchar_size(temp[i]);
-		wide_char(pf, temp[i], wchar_len);
+		wchar_len = wchar_size(*wstr);
+		wide_char(pf, *wstr, wchar_len);
+		wstr++;
 	}
 }
