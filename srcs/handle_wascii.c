@@ -61,7 +61,7 @@ void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 			}
 			ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
 		}
-		write_to_buffer(pf, ret, num_bytes);
+		write_to_buffer(pf, ret, ((num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
 	// }
 }
 
