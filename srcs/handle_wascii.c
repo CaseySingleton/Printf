@@ -36,7 +36,7 @@ size_t			wstr_size(unsigned *s)
 	return (len);
 }
 
-char			*wide_char(t_pf *pf, unsigned int wide, int num_bytes)
+void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 {
 	char		ret[4];
 
@@ -59,20 +59,18 @@ char			*wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 		}
 		ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
 	}
-	return(ft_strndup(ret, (num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
+	write_to_buffer(pf, ret, (num_bytes > MB_CUR_MAX) ? 1 : num_bytes);
 }
 
-char			*handle_wide_char(t_pf *pf)
+void				handle_wide_char(t_pf *pf)
 {
-	char			*ret;
 	unsigned int	c;
 	wchar_t			l;
 	int				char_len;
 
 	c = va_arg(pf->arg, unsigned int);
 	char_len = wchar_size(c);
-	ret = wide_char(pf, c, char_len);
-	return (ret);
+	wide_char(pf, c, char_len);
 }
 
 void			handle_wide_str(t_pf *pf)

@@ -115,8 +115,8 @@ void				handle_ascii(t_pf *pf);
 
 size_t				wchar_size(unsigned int wide_char);
 size_t				wstr_size(unsigned *s);
-char				*wide_char(t_pf *pf, unsigned int wide, int num_bytes);
-char				*handle_wide_char(t_pf *pf);
+void				wide_char(t_pf *pf, unsigned int wide, int num_bytes);
+void				handle_wide_char(t_pf *pf);
 void				handle_wide_str(t_pf *pf);
 
 /*
