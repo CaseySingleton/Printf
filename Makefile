@@ -37,15 +37,15 @@ ft:
 	@make re
 
 test:
-	@$(CC) $(CFLAGS) main.c libftprintf.a $(NAME) -o printf -I includes
+	@$(CC) $(FLAGS) main.c libftprintf.a $(NAME) -o printf -I includes
 
 $(NAME): $(OBJ)
 	@echo "Creating archive: libft.a"
 	@make -C libft
-	@echo "Creating archive: $@"
-	@cp libft/libft.a ./$@
-	@ar rc $@ $^
-	@ranlib $@
+	@echo "Creating archive: $(NAME)"
+	@cp libft/libft.a ./$(NAME)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 build:
 	@echo "Creating build directory"
@@ -53,7 +53,7 @@ build:
 
 build/%.o: srcs/%.c | build
 	@echo "  Building $@"
-	@$(CC) -I includes -c $< -o $@
+	@$(CC) $(FLAGS) -I includes -c $< -o $@
 
 clean:
 	@rm -fr build

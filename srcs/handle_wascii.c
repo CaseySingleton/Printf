@@ -65,7 +65,6 @@ void				wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 void				handle_wide_char(t_pf *pf)
 {
 	unsigned int	c;
-	wchar_t			l;
 	int				char_len;
 
 	c = va_arg(pf->arg, unsigned int);
@@ -80,6 +79,11 @@ void				handle_wide_str(t_pf *pf)
 	wchar_t			*wstr;
 
 	wstr = va_arg(pf->arg, wchar_t *);
+	if (wstr == NULL)
+	{
+		write_to_buffer(pf, "(null)", 6);
+		return ;
+	}
 	wstr_len = (int)wstr_size((unsigned *)wstr);
 	wchar_len = 0;
 	while ((wstr_len -= wchar_len) > 0)

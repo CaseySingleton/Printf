@@ -62,7 +62,7 @@ char			*signed_get_fill(char *str, t_pf *pf)
 		usable_padding = pf->precision;
 	if ((pf->flags & F_PAD_ZEROS) && (pf->flags & F_REV))
 		BIT_OFF(pf->flags, F_PAD_ZEROS);
-	if (pf->padding > 0)
+	if (pf->padding > 0 && pf->padding - usable_padding > 0)
 	{
 		fill = ft_strnew(pf->padding);
 		if ((pf->flags & F_PAD_ZEROS) && pf->precision <= 0)
