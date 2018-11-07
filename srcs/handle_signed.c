@@ -61,7 +61,7 @@ static void			combine_all(char **str, t_pf *pf)
 	precision = signed_get_precision(*str, pf);
 	fill = signed_get_fill(*str, pf);
 	append_sign(&sign, &fill, &precision, str);
-	append_precision(str, &precision);
+	// append_precision(str, &precision);
 	append_fill(str, &fill, pf);
 }
 
