@@ -40,29 +40,26 @@ void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 {
 	char		ret[4];
 
-	// if (num_bytes <= MB_CUR_MAX)
-	// {
-		if (num_bytes == 1 || num_bytes > MB_CUR_MAX)
-			ret[0] = wide;
+	if (num_bytes == 1 || num_bytes > MB_CUR_MAX)
+		ret[0] = wide;
+	else
+	{
+		if (num_bytes == 2)
+			ret[0] = ((wide & 0x1F << 6) >> 6) | 0xC0;
 		else
 		{
-			if (num_bytes == 2)
-				ret[0] = ((wide & 0x1F << 6) >> 6) | 0xC0;
+			if (num_bytes == 3)
+				ret[0] = ((wide >> 12) & 0x0F) | 0xE0;
 			else
 			{
-				if (num_bytes == 3)
-					ret[0] = ((wide >> 12) & 0x0F) | 0xE0;
-				else
-				{
-					ret[0] = ((wide >> 18) & 0x07) | 0xF0;
-					ret[1] = ((wide >> 12) & 0x3F) | 0x80;
-				}
-				ret[num_bytes - 2] = ((wide >> 6) & 0x3F) | 0x80;
+				ret[0] = ((wide >> 18) & 0x07) | 0xF0;
+				ret[1] = ((wide >> 12) & 0x3F) | 0x80;
 			}
-			ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
+			ret[num_bytes - 2] = ((wide >> 6) & 0x3F) | 0x80;
 		}
-		write_to_buffer(pf, ret, ((num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
-	// }
+		ret[num_bytes - 1] = (wide & 0x3F) | 0x80;
+	}
+	write_to_buffer(pf, ret, ((num_bytes > MB_CUR_MAX) ? 1 : num_bytes));
 }
 
 void			handle_wide_char(t_pf *pf)
@@ -89,7 +86,9 @@ void			handle_wide_str(t_pf *pf)
 	while ((wstr_len -= wchar_len) > 0)
 	{
 		wchar_len = wchar_size(*wstr);
-		wide_char(pf, *wstr, wchar_len);
+		printf("  wstr_len: %d, wchar_len: %d\n", wstr_len, wchar_len);
+		if (wchar_len <= wstr_len)
+			wide_char(pf, *wstr, wchar_len);
 		wstr++;
 	}
 }
