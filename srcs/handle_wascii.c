@@ -88,7 +88,7 @@ void			handle_wide_str(t_pf *pf)
 	wchar_len = 0;
 	while ((wstr_len -= wchar_len) > 0)
 	{
-		printf("*wstr: %d\n", *wstr);
+		write_to_buffer(pf, ft_itoa(*wstr), ft_numlen(*wstr));
 		wchar_len = wchar_size(*wstr);
 		wide_char(pf, *wstr, wchar_len);
 		wstr++;
