@@ -76,14 +76,18 @@ void			handle_wide_char(t_pf *pf)
 void			handle_wide_str(t_pf *pf)
 {
 	int			i;
+	int			wstr_len;
 	int			wchar_len;
 	wchar_t		*wstr;
 
 	wstr = va_arg(pf->arg, wchar_t *);
-	while (*wstr != L'\0')
+	wstr_len = (int)wstr_size((unsigned *)wstr);
+	wchar_len = 0;
+	while ((wstr_len -= wchar_len) > 0)
 	{
 		wchar_len = wchar_size(*wstr);
-		wide_char(pf, *wstr, wchar_len);
+		if (wchar_len <= wstr_len)
+			wide_char(pf, *wstr, wchar_len);
 		wstr++;
 	}
 }
