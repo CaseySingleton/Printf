@@ -79,7 +79,6 @@ void			handle_wide_str(t_pf *pf)
 {
 	int			wstr_len;
 	int			wchar_len;
-	char		*str;
 	wchar_t		*wstr;
 
 	wstr = va_arg(pf->arg, wchar_t *);
@@ -89,10 +88,7 @@ void			handle_wide_str(t_pf *pf)
 	{
 		wchar_len = wchar_size(*wstr);
 		if (wchar_len <= wstr_len)
-		{
-			str = wide_char(pf, *wstr, wchar_len);
-			write_to_buffer(pf, str, wchar_len);
-		}
+			wide_char(pf, *wstr, wchar_len);
 		wstr++;
 	}
 }
