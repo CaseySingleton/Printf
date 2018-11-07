@@ -105,10 +105,7 @@ int				get_precision(t_pf *pf, int i)
 	i++;
 	pf->precision = ft_atoi(pf->master + i);
 	if (pf->precision < 0)
-	{
-		ft_putstr("Precision can not be negative\n");
-		exit(-1);
-	}
+		pf->precision = 0;
 	return (i += ft_numlen(pf->precision));
 }
 

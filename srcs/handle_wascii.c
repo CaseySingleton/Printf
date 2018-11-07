@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-size_t			wchar_size(unsigned int wide_char)
+size_t				wchar_size(unsigned int wide_char)
 {
 	if (wide_char < 0x80)
 		return (1);
@@ -24,10 +24,10 @@ size_t			wchar_size(unsigned int wide_char)
 		return (4);
 }
 
-size_t			wstr_size(unsigned *s)
+size_t				wstr_size(unsigned *s)
 {
-	size_t		len;
-	int			i;
+	size_t			len;
+	int				i;
 
 	len = 0;
 	i = -1;
@@ -36,9 +36,9 @@ size_t			wstr_size(unsigned *s)
 	return (len);
 }
 
-void			wide_char(t_pf *pf, unsigned int wide, int num_bytes)
+void				wide_char(t_pf *pf, unsigned int wide, int num_bytes)
 {
-	char		ret[4];
+	char			ret[4];
 
 	if (num_bytes == 1 || num_bytes > MB_CUR_MAX)
 		ret[0] = wide;
@@ -73,11 +73,11 @@ void				handle_wide_char(t_pf *pf)
 	wide_char(pf, c, char_len);
 }
 
-void			handle_wide_str(t_pf *pf)
+void				handle_wide_str(t_pf *pf)
 {
-	int			wstr_len;
-	int			wchar_len;
-	wchar_t		*wstr;
+	int				wstr_len;
+	int				wchar_len;
+	wchar_t			*wstr;
 
 	wstr = va_arg(pf->arg, wchar_t *);
 	wstr_len = (int)wstr_size((unsigned *)wstr);
