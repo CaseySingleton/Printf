@@ -19,6 +19,8 @@ static int		pleasing_the_norm(t_pf *pf)
 	i = 1;
 	while (specifier_check(pf->master[i]) != 1 && pf->master[i] != '\0')
 	{
+		if (pf->master[i] == ' ')
+			write_to_buffer(pf, " ", 1);
 		if (pf->master[i] == '#')
 			BIT_ON(pf->flags, F_PREFIX);
 		if (flag_check(pf->master[i]) == 1)
