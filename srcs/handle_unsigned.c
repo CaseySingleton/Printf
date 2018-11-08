@@ -60,12 +60,14 @@ void			handle_unsigned(t_pf *pf)
 	{
 		if (pf->specifier != 'p' && pf->specifier != 'o')
 			BIT_OFF(pf->flags, F_PREFIX);
-		if (pf->precision == 0 || (pf->specifier == 'o' && pf->precision == -1))
+		if (pf->precision == 0)
 		{
 			null_padding(pf);
 			free(ret);
 			return ;
 		}
+		if (pf->specifier == 'o')
+			BIT_OFF(pf->flags, F_PREFIX);
 	}
 	handle_padding(pf, &ret);
 	free(ret);
