@@ -138,7 +138,7 @@ void			padding(t_pf *pf, int arglen)
 		padding_len--;
 	if (pf->precision < arglen)
 		padding_len -= arglen;
-	else if (pf->precision > arglen)
+	else if (pf->precision >= arglen)
 		padding_len -= pf->precision;
 	if (padding_len > 0)
 	{

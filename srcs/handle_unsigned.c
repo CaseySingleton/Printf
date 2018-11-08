@@ -58,7 +58,7 @@ void			handle_unsigned(t_pf *pf)
 		BIT_ON(pf->flags, F_PREFIX);
 	if (ft_strcmp(ret, "0") == 0)
 	{
-		if (pf->specifier != 'p')
+		if (pf->specifier != 'p' && pf->specifier != 'o')
 			BIT_OFF(pf->flags, F_PREFIX);
 		if (pf->precision == 0)
 		{
