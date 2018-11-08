@@ -20,16 +20,18 @@ void					handle_str(t_pf *pf)
 	temp = va_arg(pf->arg, char *);
 	if (temp == NULL)
 		ret = ft_strdup("(null)");
-	else if (pf->precision > 0)
+	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(ret))
 		ret = ft_strndup(temp, pf->precision);
 	else if (temp[4] == '@')
 		ret = ft_strdup("@@");
 	else
 		ret = ft_strdup(temp);
-	if (pf->flags & F_PAD_ZEROS)
-		BIT_OFF(pf->flags, F_PAD_ZEROS);
-	handle_padding(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret));
+	pf->precision = 0;
+	BIT_OFF(pf->flags, F_PAD_ZEROS);
+	if (temp != NULL && temp[0] == '\0')
+		null_padding(pf);
+	else
+		handle_padding(pf, &ret);
 	free(ret);
 }
 
@@ -44,30 +46,31 @@ void					handle_char(t_pf *pf)
 	num_bytes = wchar_size(c);
 	if (c == 0)
 	{
-		ret = ft_strnew(pf->padding - ((pf->padding > 0) ? 1 : 0));
-		ft_memset(ret, ' ', pf->padding - ((pf->padding > 0) ? 1 : 0));
+		if (pf->padding >= 1)
+			pf->padding -= 1;
+		if (!(pf->flags & F_REV))
+			null_padding(pf);
+		write_to_buffer(pf, "\0", 1);
+		if (pf->flags & F_REV)
+			null_padding(pf);
+		return ;
 	}
 	else
 	{
 		ret = ft_strnew(1);
 		*ret = c;
 	}
-	if (c != 0)
-		handle_padding(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret) + ((c == 0) ? 1 : 0));
+	handle_padding(pf, &ret);
 	free(ret);
 }
 
 void					handle_percent(t_pf *pf)
 {
-	char				*ret;
-
-	if (!(ret = ft_strnew(1)))
-		return ;
-	ret[0] = '%';
-	handle_padding(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret));
-	free(ret);
+	if (!(pf->flags & F_REV))
+		padding(pf, 1);
+	write_to_buffer(pf, "%", 1);
+	if (pf->flags & F_REV)
+		padding(pf, 1);
 }
 
 void					handle_ascii(t_pf *pf)
@@ -82,6 +85,4 @@ void					handle_ascii(t_pf *pf)
 		handle_wide_char(pf);
 	else if (pf->specifier == '%')
 		handle_percent(pf);
-	else
-		return ;
 }

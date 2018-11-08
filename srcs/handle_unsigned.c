@@ -55,16 +55,18 @@ void			handle_unsigned(t_pf *pf)
 	upper = ((pf->specifier == 'X') ? 1 : 0);
 	ret = get_unsigned_data_type(pf, base, upper);
 	if (pf->specifier == 'p')
-		ret = ft_strjoin_free_s2("0x", ret);
-	if (ft_strcmp(ret, "0") == 0 && pf->precision == 0)
+		BIT_ON(pf->flags, F_PREFIX);
+	if (ft_strcmp(ret, "0") == 0)
 	{
-		free(ret);
-		ret = ft_strnew(0);
 		if (pf->specifier != 'o')
 			BIT_OFF(pf->flags, F_PREFIX);
+		if (pf->precision == 0)
+		{
+			null_padding(pf);
+			free(ret);
+			return ;
+		}
 	}
-	handle_precision(&ret, pf);
-	handle_padding(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret));
+	handle_padding(pf, &ret);
 	free(ret);
 }

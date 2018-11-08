@@ -34,21 +34,7 @@ char			*get_signed_data_type(t_pf *pf, int base, int upper)
 	ret = ft_lltoa_base(i, base, upper);
 	return (ret);
 }
-
-char			*signed_get_sign(t_pf *pf)
-{
-	char		*sign;
-
-	sign = NULL;
-	if (pf->flags & F_MINUS)
-		sign = ft_strdup("-");
-	else if (pf->flags & F_PLUS)
-		sign = ft_strdup("+");
-	if ((pf->flags & F_MINUS) || (pf->flags & F_PLUS))
-		pf->padding -= 1;
-	return (sign);
-}
-
+/*
 char			*signed_get_fill(char *str, t_pf *pf)
 {
 	char		*fill;
@@ -73,7 +59,7 @@ char			*signed_get_fill(char *str, t_pf *pf)
 	return (fill);
 }
 
-char			*signed_get_precision(char *str, t_pf *pf)
+void			signed_get_precision(char *str, t_pf *pf)
 {
 	char		*precision;
 	int			usable_precision;
@@ -87,6 +73,8 @@ char			*signed_get_precision(char *str, t_pf *pf)
 				pf->padding = 0;
 		precision = ft_strnew(usable_precision);
 		ft_memset(precision, '0', usable_precision);
+		write_to_buffer(pf, precision, usable_precision);
+		free(precision);
 	}
-	return (precision);
 }
+*/

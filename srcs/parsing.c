@@ -19,8 +19,6 @@ static int		pleasing_the_norm(t_pf *pf)
 	i = 1;
 	while (specifier_check(pf->master[i]) != 1 && pf->master[i] != '\0')
 	{
-		if (pf->master[i] == ' ')
-			write_to_buffer(pf, " ", 1);
 		if (pf->master[i] == '#')
 			BIT_ON(pf->flags, F_PREFIX);
 		if (flag_check(pf->master[i]) == 1)
@@ -30,7 +28,7 @@ static int		pleasing_the_norm(t_pf *pf)
 		if (pf->master[i] == '.')
 			i = get_precision(pf, i);
 		if (pf->master[i] == ' ')
-			pf->count_spaces++;
+			BIT_ON(pf->flags, F_SPACE);
 		if (pf->master[i] == '+')
 			BIT_ON(pf->flags, F_PLUS);
 		if (pf->master[i] == '-')
@@ -49,7 +47,7 @@ int				get_info(t_pf *pf)
 	if (pf->master[i] != '\0')
 		pf->specifier = pf->master[i++];
 	if (pf->count_spaces != i - 2 || (pf->specifier != 'd' &&
-	pf->specifier != 'D'))
+	pf->specifier != 'D' && pf->specifier != 'i'))
 		pf->count_spaces = 0;
 	return (i);
 }

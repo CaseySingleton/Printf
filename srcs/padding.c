@@ -30,7 +30,7 @@
 **	if pad_zeros == 1 append 0x to start of fill
 **	if pad_zeros == 0 append 0x to start of pf->arg
 */
-
+/*
 static char		*only_fill(char **str, char *fill, t_pf *pf)
 {
 	char		*ret;
@@ -76,18 +76,13 @@ static char		*fill_and_prefix(char **str, char *fill, char *prefix,
 	return (ret);
 }
 
-static char		*combine_padding_and_prefix(char **str, char *fill,
-				char *prefix, t_pf *pf)
+static char		*combine_padding_and_prefix(char **str, char *fill, t_pf *pf)
 {
 	char		*ret;
 
 	ret = NULL;
-	if (fill == NULL && prefix != NULL)
-		ret = ft_strjoin_free(prefix, *str);
-	else if (fill != NULL && prefix == NULL)
+	if (fill != NULL)
 		ret = only_fill(str, fill, pf);
-	else if (fill != NULL && prefix != NULL)
-		ret = fill_and_prefix(str, fill, prefix, pf);
 	else
 	{
 		ret = ft_strdup(*str);
@@ -95,15 +90,123 @@ static char		*combine_padding_and_prefix(char **str, char *fill,
 	}
 	return (ret);
 }
+*/
 
-void			handle_padding(char **str, t_pf *pf)
+/*
+**	if (precision != 0)
+**		padding = ' ' even if pad_zeros
+**	if (precision < padding && pad_zeros)
+**		padding = ' ' instead of '0'
+**	if (precision == padding)
+**		only consider precision
+**	if (padding > precision)
+**		padding -> precision -> arg
+*/
+
+static int				prefix_size(t_pf *pf)
 {
-	char		*prefix;
-	char		*fill;
+	if (signed_specifier_check(pf->specifier))
+	{
+		if (pf->flags & F_MINUS)
+			return (1);
+		else if (pf->flags & F_PLUS)
+			return (1);
+	}
+	else if (pf->flags & F_PREFIX)
+	{
+		if (pf->specifier == 'x')
+			return (2);
+		else if (pf->specifier == 'X')
+			return (2);
+		else if (pf->specifier == 'o')
+			return (1);
+	}
+	return (0);
+}
 
-	prefix = NULL;
-	fill = NULL;
-	prefix = get_prefix(*str, pf);
-	fill = padding(*str, pf);
-	*str = combine_padding_and_prefix(str, fill, prefix, pf);
+void			get_space(t_pf *pf)
+{
+	if (pf->flags & F_SPACE)
+		write_to_buffer(pf, " ", 1);
+}
+
+void			padding(t_pf *pf, int arglen)
+{
+	char		*pad;
+	int			padding_len;
+
+	pad = NULL;
+	padding_len = pf->padding;
+	if (pf->flags & F_PREFIX || pf->flags & F_MINUS || pf->flags & F_PLUS)
+		padding_len -= prefix_size(pf);
+	if (pf->flags & F_SPACE)
+		padding_len--;
+	if (pf->precision < arglen)
+		padding_len -= arglen;
+	else if (pf->precision > arglen)
+		padding_len -= pf->precision;
+	if (padding_len > 0)
+	{
+		if (pf->flags & F_PAD_ZEROS && pf->flags & F_REV)
+			BIT_OFF(pf->flags, F_PAD_ZEROS);
+		pad = ft_strnew(padding_len);
+		if (pf->flags & F_PAD_ZEROS && pf->precision <= 0)
+			ft_memset(pad, '0', padding_len);
+		else
+			ft_memset(pad, ' ', padding_len);
+		write_to_buffer(pf, pad, padding_len);
+	}
+}
+
+void			null_padding(t_pf *pf)
+{
+	char		*pad;
+
+	pad = ft_strnew(pf->padding);
+	ft_memset(pad, ' ', pf->padding);
+	if (!(pf->flags & F_REV))
+		write_to_buffer(pf, pad, pf->padding);
+	if (pf->flags & F_PREFIX)
+		get_prefix(pf);
+	if (pf->flags & F_REV)
+		write_to_buffer(pf, pad, pf->padding);
+	free(pad);
+}
+
+void			handle_precision(char **str, t_pf *pf)
+{
+	int			len;
+	char		*temp;
+
+	len = pf->precision - ft_strlen(*str);
+	temp = NULL;
+	if (len > 0)
+	{
+		if (!(temp = ft_strnew(len)))
+			return ;
+		ft_memset(temp, '0', len);
+		if ((pf->flags & F_MINUS) == 1)
+			temp[0] = '-';
+		write_to_buffer(pf, temp, len);
+	}
+}
+
+void			handle_padding(t_pf *pf, char **str)
+{
+	int			arglen;
+
+	arglen = ft_strlen(*str);
+	if (!(pf->flags & F_MINUS) && !(pf->flags & F_PLUS) &&
+	ft_tolower(pf->specifier) != 'u')
+		get_space(pf);
+	if (pf->flags & F_PAD_ZEROS)
+		get_prefix(pf);
+	if (!(pf->flags & F_REV))
+		padding(pf, arglen);
+	if (!(pf->flags & F_PAD_ZEROS))
+		get_prefix(pf);
+	handle_precision(str, pf);
+	write_to_buffer(pf, *str, arglen);
+	if (pf->flags & F_REV)
+		padding(pf, arglen);
 }

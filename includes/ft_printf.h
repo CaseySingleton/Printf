@@ -52,6 +52,7 @@
 # define F_PLUS			(1 << 8)
 # define F_MINUS		(1 << 9)
 # define F_PAD_ZEROS	(1 << 10)
+# define F_SPACE		(1 << 11)
 
 typedef struct		s_pf
 {
@@ -94,11 +95,12 @@ int					get_precision(t_pf *pf, int i);
 **	----------------- padding.c / padding_helpers.c -----------------
 */
 
-void				handle_padding(char **str, t_pf *pf);
-char				*get_prefix(char *str, t_pf *pf);
+void				null_padding(t_pf *pf);
+void				handle_padding(t_pf *pf, char **str);
+void				get_prefix(t_pf *pf);
 char				*get_spaces(t_pf *pf);
 void				handle_precision(char **str, t_pf *pf);
-char				*padding(char *str, t_pf *pf);
+void				padding(t_pf *pf, int arglen);
 
 /*
 **	------------------------ handle_ascii.c -------------------------
@@ -125,9 +127,9 @@ void				handle_wide_str(t_pf *pf);
 
 void				handle_signed(t_pf *pf);
 char				*get_signed_data_type(t_pf *pf, int base, int upper);
-char				*signed_get_sign(t_pf *pf);
+void				signed_get_sign(t_pf *pf);
 char				*signed_get_fill(char *str, t_pf *pf);
-char				*signed_get_precision(char *str, t_pf *pf);
+void				signed_get_precision(char *str, t_pf *pf);
 
 /*
 **	----------------------- handle_unsigned.c -----------------------

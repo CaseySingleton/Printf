@@ -21,6 +21,8 @@ void			print_buffer(t_pf *pf, int bytes)
 
 void			write_to_buffer(t_pf *pf, char *addition, int bytes)
 {
+	if (addition == NULL || bytes == 0)
+		return ;
 	if (pf->buffer_index + bytes >= PF_BUFF_SIZE)
 		print_buffer(pf, PF_BUFF_SIZE);
 	ft_memcpy(pf->buffer + pf->buffer_index, addition, bytes);

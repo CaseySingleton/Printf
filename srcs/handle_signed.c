@@ -20,7 +20,7 @@
 **	  if num is negative or positive is explicit append to the
 **	  beginning of the argument
 */
-
+/*
 static void			append_sign(char **sign, char **fill, char **precision,
 					char **str)
 {
@@ -53,18 +53,16 @@ static void			append_fill(char **str, char **fill, t_pf *pf)
 
 static void			combine_all(char **str, t_pf *pf)
 {
-	char			*sign;
 	char			*precision;
 	char			*fill;
 
-	sign = signed_get_sign(pf);
 	precision = signed_get_precision(*str, pf);
 	fill = signed_get_fill(*str, pf);
 	append_sign(&sign, &fill, &precision, str);
 	append_precision(str, &precision);
 	append_fill(str, &fill, pf);
 }
-
+*/
 void				handle_signed(t_pf *pf)
 {
 	char			*ret;
@@ -79,11 +77,24 @@ void				handle_signed(t_pf *pf)
 	else if (ret[0] == '-')
 	{
 		BIT_ON(pf->flags, F_MINUS);
+		BIT_OFF(pf->flags, F_PLUS);
 		temp = ft_strdup(ret + 1);
 		free(ret);
 		ret = temp;
 	}
-	combine_all(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret));
+	handle_padding(pf, &ret);
+	// write_to_buffer(pf, ret, ft_strlen(ret));
 	free(ret);
 }
+
+/*
+**	if (rev == 0)
+**		if (flag->rev == 0)
+**			add padding
+**		add sign
+**
+**	add arg
+**
+**	if (rev == 1) happens after the above
+**		add padding
+*/
