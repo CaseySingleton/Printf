@@ -29,15 +29,17 @@ static void		dispatch(t_pf *pf)
 
 static void		handle_all_args(t_pf *pf)
 {
+	int			i;
+
 	while (*pf->master != '\0')
 	{
 		if (*pf->master == '%')
 			dispatch(pf);
-		if (*pf->master != '\0' && *pf->master != '%')
-		{
-			write_to_buffer(pf, pf->master, 1);
-			(pf->master)++;
-		}
+		i = 0;
+		while (pf->master[i] != '\0' && pf->master[i] != '%')
+			i++;
+		write_to_buffer(pf, pf->master, i);
+		pf->master += i;
 	}
 	print_buffer(pf, pf->total_bytes);
 }
