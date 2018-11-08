@@ -23,7 +23,7 @@ void			get_prefix(t_pf *pf)
 	}
 	else if (pf->flags & F_PREFIX)
 	{
-		if (pf->specifier == 'x')
+		if (pf->specifier == 'x' || pf->specifier == 'p')
 			write_to_buffer(pf, "0x", 2);
 		else if (pf->specifier == 'X')
 			write_to_buffer(pf, "0X", 2);

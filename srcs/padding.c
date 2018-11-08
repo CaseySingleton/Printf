@@ -106,19 +106,14 @@ static char		*combine_padding_and_prefix(char **str, char *fill, t_pf *pf)
 static int				prefix_size(t_pf *pf)
 {
 	if (signed_specifier_check(pf->specifier))
-	{
-		if (pf->flags & F_MINUS)
+		if (pf->flags & F_MINUS || pf->flags & F_PLUS)
 			return (1);
-		else if (pf->flags & F_PLUS)
-			return (1);
-	}
-	else if (pf->flags & F_PREFIX)
+	if (pf->flags & F_PREFIX)
 	{
-		if (pf->specifier == 'x')
+		if (pf->specifier == 'x' || pf->specifier == 'X' ||
+		pf->specifier == 'p')
 			return (2);
-		else if (pf->specifier == 'X')
-			return (2);
-		else if (pf->specifier == 'o')
+		if (pf->specifier == 'o')
 			return (1);
 	}
 	return (0);
