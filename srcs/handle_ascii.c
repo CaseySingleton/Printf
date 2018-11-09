@@ -18,10 +18,9 @@ void					handle_str(t_pf *pf)
 	char				*ret;
 
 	temp = va_arg(pf->arg, char *);
-	ret = NULL;
 	if (temp == NULL)
 		ret = ft_strdup("(null)");
-	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(ret))
+	else if (pf->precision > 0 && pf->precision < (int)ft_strlen(temp))
 		ret = ft_strndup(temp, pf->precision);
 	else
 		ret = ft_strdup(temp);
