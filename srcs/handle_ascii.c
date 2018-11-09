@@ -12,11 +12,6 @@
 
 #include "ft_printf.h"
 
-/*
-**	use an unsigned int * for temp
-**	check value of temp to see how many chars are given
-*/
-
 void					handle_str(t_pf *pf)
 {
 	char				*temp;
@@ -26,7 +21,7 @@ void					handle_str(t_pf *pf)
 	ret = NULL;
 	if (temp == NULL)
 		ret = ft_strdup("(null)");
-	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(temp))
+	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(ret))
 		ret = ft_strndup(temp, pf->precision);
 	else
 		ret = ft_strdup(temp);
