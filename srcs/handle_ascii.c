@@ -23,7 +23,6 @@ void					handle_str(t_pf *pf)
 	char				*ret;
 
 	temp = va_arg(pf->arg, char *);
-	printf("arg: |%s|\n", temp);
 	if (temp == NULL)
 		ret = ft_strdup("(null)");
 	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(temp))
