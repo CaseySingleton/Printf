@@ -23,6 +23,7 @@ void					handle_str(t_pf *pf)
 	char				*ret;
 
 	temp = va_arg(pf->arg, char *);
+	printf("arg: |%s|\n", temp);
 	if (temp == NULL)
 		ret = ft_strdup("(null)");
 	else if (pf->precision > 0 && pf->precision < (int)ft_strlen(temp))
@@ -31,7 +32,7 @@ void					handle_str(t_pf *pf)
 		ret = ft_strdup(temp);
 	pf->precision = 0;
 	BIT_OFF(pf->flags, F_PAD_ZEROS);
-	if (temp != NULL && temp[0] == '\0')
+	if (ret != NULL && ret[0] == '\0')
 		null_padding(pf);
 	else
 		handle_padding(pf, &ret);
