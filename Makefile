@@ -20,7 +20,7 @@ FILES			= ft_printf.c \
 				  parsing.c \
 				  padding.c padding_helpers.c \
 				  handle_ascii.c handle_wascii.c \
-				  handle_signed.c signed_helpers.c \
+				  handle_signed.c \
 				  handle_unsigned.c \
 				  utils.c \
 				  buffer.c

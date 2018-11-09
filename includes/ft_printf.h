@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdarg.h>
 # include <stdint.h>
+# include <limits.h>
 # include "libft.h"
 
 # define PF_BUFF_SIZE 256
@@ -98,9 +99,9 @@ int					get_precision(t_pf *pf, int i);
 void				null_padding(t_pf *pf);
 void				handle_padding(t_pf *pf, char **str);
 void				get_prefix(t_pf *pf);
-char				*get_spaces(t_pf *pf);
 void				handle_precision(char **str, t_pf *pf);
 void				padding(t_pf *pf, int arglen);
+void				get_space(t_pf *pf);
 
 /*
 **	------------------------ handle_ascii.c -------------------------

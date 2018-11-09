@@ -32,18 +32,8 @@ void			get_prefix(t_pf *pf)
 	}
 }
 
-char			*get_spaces(t_pf *pf)
+void			get_space(t_pf *pf)
 {
-	char		*spaces;
-
-	spaces = NULL;
-	if (pf->count_spaces != 0 && (pf->flags & F_MINUS) != 1)
-	{
-		if ((pf->flags & F_MINUS) || (pf->flags & F_PLUS))
-			pf->count_spaces--;
-		if (!(spaces = ft_strnew(pf->count_spaces)))
-			return (NULL);
-		ft_memset(spaces, ' ', pf->count_spaces);
-	}
-	return (spaces);
+	if (pf->flags & F_SPACE)
+		write_to_buffer(pf, " ", 1);
 }

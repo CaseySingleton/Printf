@@ -12,61 +12,33 @@
 
 #include "ft_printf.h"
 
-/*
-**	arg -> precision -> sign (+ or -) -> padding
-**
-**	if there's precision pad the left of the argument with
-**	num_precision - numlen(arg) '0' characters
-**	  if num is negative or positive is explicit append to the
-**	  beginning of the argument
-*/
-/*
-static void			append_sign(char **sign, char **fill, char **precision,
-					char **str)
+char			*get_signed_data_type(t_pf *pf, int base, int upper)
 {
-	if (*fill != NULL && *fill[0] == '0' && *sign != NULL)
-		*fill = ft_strjoin(*sign, *fill);
-	else if (*precision != NULL && *sign != NULL)
-		*precision = ft_strjoin_free(*sign, *precision);
-	else if (*precision == NULL && *sign != NULL)
-		*str = ft_strjoin_free(*sign, *str);
-	else if (*fill == NULL && *precision == NULL && *sign != NULL)
-		*str = ft_strjoin_free(*sign, *str);
+	char		*ret;
+	intmax_t	i;
+
+	if (pf->flags & F_H)
+		i = ((intmax_t)((short)va_arg(pf->arg, int)));
+	else if (pf->flags & F_HH)
+		i = ((intmax_t)((char)va_arg(pf->arg, int)));
+	else if (pf->flags & F_L || pf->specifier == 'D')
+		i = ((intmax_t)va_arg(pf->arg, long));
+	else if (pf->flags & F_LL)
+		i = ((intmax_t)va_arg(pf->arg, long long));
+	else if (pf->flags & F_Z)
+		i = ((intmax_t)va_arg(pf->arg, size_t));
+	else if (pf->flags & F_J)
+		i = va_arg(pf->arg, intmax_t);
+	else
+		i = ((intmax_t)va_arg(pf->arg, int));
+	ret = ft_lltoa_base(i, base, upper);
+	return (ret);
 }
 
-static void			append_precision(char **str, char **precision)
+void			handle_signed(t_pf *pf)
 {
-	if (*precision != NULL)
-		*str = ft_strjoin_free(*precision, *str);
-}
-
-static void			append_fill(char **str, char **fill, t_pf *pf)
-{
-	if (*fill != NULL)
-	{
-		if (pf->flags & F_REV)
-			*str = ft_strjoin_free(*str, *fill);
-		else
-			*str = ft_strjoin_free(*fill, *str);
-	}
-}
-
-static void			combine_all(char **str, t_pf *pf)
-{
-	char			*precision;
-	char			*fill;
-
-	precision = signed_get_precision(*str, pf);
-	fill = signed_get_fill(*str, pf);
-	append_sign(&sign, &fill, &precision, str);
-	append_precision(str, &precision);
-	append_fill(str, &fill, pf);
-}
-*/
-void				handle_signed(t_pf *pf)
-{
-	char			*ret;
-	char			*temp;
+	char		*ret;
+	char		*temp;
 
 	ret = get_signed_data_type(pf, 10, 0);
 	if (ft_strcmp(ret, "0") == 0 && pf->precision == 0)
@@ -83,18 +55,5 @@ void				handle_signed(t_pf *pf)
 		ret = temp;
 	}
 	handle_padding(pf, &ret);
-	// write_to_buffer(pf, ret, ft_strlen(ret));
 	free(ret);
 }
-
-/*
-**	if (rev == 0)
-**		if (flag->rev == 0)
-**			add padding
-**		add sign
-**
-**	add arg
-**
-**	if (rev == 1) happens after the above
-**		add padding
-*/

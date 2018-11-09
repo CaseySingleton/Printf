@@ -26,84 +26,7 @@
 **	A negative value will place spaces to the left
 */
 
-/*
-**	if pad_zeros == 1 append 0x to start of fill
-**	if pad_zeros == 0 append 0x to start of pf->arg
-*/
-/*
-static char		*only_fill(char **str, char *fill, t_pf *pf)
-{
-	char		*ret;
-
-	ret = NULL;
-	if ((pf->flags & F_REV) && !(pf->flags & F_PAD_ZEROS))
-		ret = ft_strjoin(*str, fill);
-	else if ((pf->flags & F_REV) && (pf->flags & F_PAD_ZEROS) &&
-	fill[0] == ' ')
-		ret = ft_strjoin(*str, fill);
-	else if ((pf->flags & F_REV) != 1)
-		ret = ft_strjoin(fill, *str);
-	return (ret);
-}
-
-static char		*fill_and_prefix(char **str, char *fill, char *prefix,
-				t_pf *pf)
-{
-	char		*ret;
-
-	ret = NULL;
-	if ((pf->flags & F_PAD_ZEROS) && (pf->flags & F_REV) &&
-	fill[0] == ' ')
-	{
-		ret = ft_strjoin_free(prefix, *str);
-		ret = ft_strjoin_free(ret, fill);
-	}
-	else if (pf->flags & F_PAD_ZEROS)
-	{
-		ret = ft_strjoin_free(prefix, fill);
-		ret = ft_strjoin_free(ret, *str);
-	}
-	else if (!(pf->flags & F_PAD_ZEROS) && (pf->flags & F_REV))
-	{
-		ret = ft_strjoin_free(prefix, *str);
-		ret = ft_strjoin_free(ret, fill);
-	}
-	else if (!(pf->flags & F_PAD_ZEROS))
-	{
-		ret = ft_strjoin_free(prefix, *str);
-		ret = ft_strjoin_free(fill, ret);
-	}
-	return (ret);
-}
-
-static char		*combine_padding_and_prefix(char **str, char *fill, t_pf *pf)
-{
-	char		*ret;
-
-	ret = NULL;
-	if (fill != NULL)
-		ret = only_fill(str, fill, pf);
-	else
-	{
-		ret = ft_strdup(*str);
-		free(*str);
-	}
-	return (ret);
-}
-*/
-
-/*
-**	if (precision != 0)
-**		padding = ' ' even if pad_zeros
-**	if (precision < padding && pad_zeros)
-**		padding = ' ' instead of '0'
-**	if (precision == padding)
-**		only consider precision
-**	if (padding > precision)
-**		padding -> precision -> arg
-*/
-
-static int				prefix_size(t_pf *pf)
+static int		prefix_size(t_pf *pf)
 {
 	if (signed_specifier_check(pf->specifier))
 		if (pf->flags & F_MINUS || pf->flags & F_PLUS)
@@ -117,12 +40,6 @@ static int				prefix_size(t_pf *pf)
 			return (1);
 	}
 	return (0);
-}
-
-void			get_space(t_pf *pf)
-{
-	if (pf->flags & F_SPACE)
-		write_to_buffer(pf, " ", 1);
 }
 
 void			padding(t_pf *pf, int arglen)
