@@ -22,23 +22,21 @@ void					handle_str(t_pf *pf)
 	char				*temp;
 	char				*ret;
 
-	if (!(temp = va_arg(pf->arg, char *)))
-		printf("what\n");
-	printf("%s\n", temp);
-	// ret = NULL;
-	// if (temp == NULL)
-	// 	ret = ft_strdup("(null)");
-	// else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(temp))
-	// 	ret = ft_strndup(temp, pf->precision);
-	// else
-	// 	ret = ft_strdup(temp);
-	// pf->precision = 0;
-	// BIT_OFF(pf->flags, F_PAD_ZEROS);
-	// if (ret != NULL && ret[0] == '\0')
-	// 	null_padding(pf);
-	// else
-	// 	handle_padding(pf, &ret);
-	// free(ret);
+	temp = va_arg(pf->arg, char *);
+	ret = NULL;
+	if (temp == NULL)
+		ret = ft_strdup("(null)");
+	else if (pf->precision > 0 && pf->precision >= (int)ft_strlen(temp))
+		ret = ft_strndup(temp, pf->precision);
+	else
+		ret = ft_strdup(temp);
+	pf->precision = 0;
+	BIT_OFF(pf->flags, F_PAD_ZEROS);
+	if (ret != NULL && ret[0] == '\0')
+		null_padding(pf);
+	else
+		handle_padding(pf, &ret);
+	free(ret);
 }
 
 void					handle_char(t_pf *pf)
