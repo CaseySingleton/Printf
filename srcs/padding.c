@@ -67,6 +67,7 @@ void			padding(t_pf *pf, int arglen)
 		else
 			ft_memset(pad, ' ', padding_len);
 		write_to_buffer(pf, pad, padding_len);
+		free(pad);
 	}
 }
 
@@ -100,6 +101,7 @@ void			handle_precision(char **str, t_pf *pf)
 		if ((pf->flags & F_MINUS) == 1)
 			temp[0] = '-';
 		write_to_buffer(pf, temp, len);
+		free(temp);
 	}
 }
 

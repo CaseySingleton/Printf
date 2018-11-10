@@ -25,8 +25,6 @@ void			write_to_buffer(t_pf *pf, char *addition, int bytes)
 
 	if (addition == NULL || bytes == 0)
 		return ;
-	// printf("\npf->buffer_index: %d, pf->buffer: ->%s<-", pf->buffer_index, pf->buffer);
-	// printf("\nbytes: %d, addition: ->%s<-\n", bytes, addition);
 	pf->total_bytes += bytes;
 	while (PF_BUFF_SIZE - pf->buffer_index <= bytes)
 	{

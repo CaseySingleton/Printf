@@ -12,27 +12,6 @@
 
 #include "ft_printf.h"
 
-/*
-void					handle_str(t_pf *pf)
-{
-	char				*temp;
-	char				*ret;
-
-	temp = va_arg(pf->arg, char *);
-	if (temp == NULL)
-		ret = ft_strdup("(null)");
-	else if (pf->precision > 0)
-		ret = ft_strndup(temp, pf->precision);
-	else
-		ret = ft_strdup(temp);
-	if (pf->flags & F_PAD_ZEROS)
-		BIT_OFF(pf->flags, F_PAD_ZEROS);
-	handle_padding(&ret, pf);
-	write_to_buffer(pf, ret, ft_strlen(ret));
-	free(ret);
-}
-*/
-
 void					handle_str(t_pf *pf)
 {
 	char				*temp;
