@@ -60,12 +60,12 @@ void					handle_str(t_pf *pf)
 
 void					handle_char(t_pf *pf)
 {
-	unsigned			c;
+	unsigned int		c;
 	int					num_bytes;
 	char				*ret;
 
 	ret = NULL;
-	c = (va_arg(pf->arg, unsigned int));
+	c = va_arg(pf->arg, unsigned int);
 	num_bytes = wchar_size(c);
 	if (c == 0)
 	{

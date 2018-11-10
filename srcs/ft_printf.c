@@ -41,7 +41,7 @@ static void		handle_all_args(t_pf *pf)
 		write_to_buffer(pf, pf->master, i);
 		pf->master += i;
 	}
-	print_buffer(pf, pf->total_bytes);
+	print_buffer(pf, pf->buffer_index);
 }
 
 /*
