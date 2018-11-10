@@ -1,4 +1,4 @@
-# **************************************************************************** #
+#**************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -6,7 +6,7 @@
 #    By: csinglet <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/22 18:59:57 by csinglet          #+#    #+#              #
-#    Updated: 2018/09/29 03:56:09 by csinglet         ###   ########.fr        #
+#    Updated: 2018/11/09 23:25:49 by csinglet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC				= gcc
 CFLAGS			= -Wall -Werror -Wextra -O3
 FLAGS			= $(CFLAGS)
 
-FILES			= ft_printf.c \
+PRINTF_FILES	= ft_printf.c \
 				  parsing.c \
 				  padding.c padding_helpers.c \
 				  handle_ascii.c handle_wascii.c \
@@ -25,10 +25,28 @@ FILES			= ft_printf.c \
 				  utils.c \
 				  buffer.c
 
-SRC				= $(addprefix srcs/, $(FILES))
-OBJ				= $(addprefix build/, $(FILES:.c=.o))
+LIBFT_FILES		= ft_abs.c \
+				  ft_atoi.c \
+				  ft_bzero.c \
+				  ft_isdigit.c \
+				  ft_lltoa_base.c \
+				  ft_llutoa_base.c \
+				  ft_memcpy.c \
+				  ft_memset.c \
+				  ft_numlen.c \
+				  ft_strcmp.c \
+				  ft_strdup.c \
+				  ft_strcpy.c \
+				  ft_strlen.c \
+				  ft_strndup.c \
+				  ft_strnew.c \
+				  ft_tolower.c
 
-INC_LIBFT		= -I libft/includes
+FILES			= $(PRINTF_FILES) $(LIBFT_FILES)
+
+PF_SRC			= $(addprefix srcs/printf_srcs, $(PRINTF_FILES))
+LIB_SRC			= $(addprefix srcs/libft_srcs, $(LIBFT_FILES))
+OBJ				= $(addprefix build/, $(FILES:.c=.o))
 
 all: $(NAME)
 
@@ -40,10 +58,7 @@ test:
 	@$(CC) $(FLAGS) main.c libftprintf.a $(NAME) -o printf -I includes
 
 $(NAME): $(OBJ)
-	@echo "Creating archive: libft.a"
-	@make -C libft
 	@echo "Creating archive: $(NAME)"
-	@cp libft/libft.a ./$(NAME)
 	@ar rc $(NAME) $(OBJ)
 	@ranlib $(NAME)
 
@@ -51,16 +66,14 @@ build:
 	@echo "Creating build directory"
 	@mkdir build
 
-build/%.o: srcs/%.c | build
+build/%.o: srcs/*/%.c | build
 	@echo "  Building $@"
 	@$(CC) $(FLAGS) -I includes -c $< -o $@
 
 clean:
 	@rm -fr build
-	@make -C libft clean
 
 fclean: clean
 	@rm -f $(NAME)
-	@make -C libft fclean
 
 re: fclean all

@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_striteri.c                                      :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: csinglet <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/20 12:51:48 by csinglet          #+#    #+#             */
-/*   Updated: 2018/04/20 12:51:49 by csinglet         ###   ########.fr       */
+/*   Created: 2018/10/02 17:14:12 by csinglet          #+#    #+#             */
+/*   Updated: 2018/11/09 23:20:36 by csinglet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_striteri(char *str, void (*f)(unsigned int, char *))
+char			*ft_strndup(const char *src, size_t n)
 {
-	unsigned int	index;
-	unsigned int	size;
+	char		*new;
+	int			i;
 
-	index = 0;
-	if (str && f)
-	{
-		size = ft_strlen(str);
-		while (index < size)
-		{
-			f(index, str + index);
-			index++;
-		}
-	}
+	if (!(new = ft_strnew(n)))
+		return (NULL);
+	i = -1;
+	while (++i < (int)n)
+		new[i] = src[i];
+	return (new);
 }
