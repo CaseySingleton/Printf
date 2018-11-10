@@ -21,12 +21,12 @@ void			print_buffer(t_pf *pf, int bytes)
 
 void			write_to_buffer(t_pf *pf, char *addition, int bytes)
 {
-	// printf("\npf->buffer_index: %d, pf->buffer: ->%s<-", pf->buffer_index, pf->buffer);
-	// printf("\nbytes: %d, addition: ->%s<-\n", bytes, addition);
 	int			to_copy;
 
 	if (addition == NULL || bytes == 0)
 		return ;
+	// printf("\npf->buffer_index: %d, pf->buffer: ->%s<-", pf->buffer_index, pf->buffer);
+	// printf("\nbytes: %d, addition: ->%s<-\n", bytes, addition);
 	pf->total_bytes += bytes;
 	while (PF_BUFF_SIZE - pf->buffer_index <= bytes)
 	{
@@ -42,5 +42,5 @@ void			write_to_buffer(t_pf *pf, char *addition, int bytes)
 	}
 	if (bytes > 0)
 		ft_memcpy(pf->buffer + pf->buffer_index, addition, bytes);
-	pf->buffer_index = bytes;
+	pf->buffer_index += bytes;
 }
