@@ -21,7 +21,7 @@
 # include <limits.h>
 # include "libft.h"
 
-# define PF_BUFF_SIZE 256
+# define PF_BUFF_SIZE 64
 
 /*
 **	Unix color codes
